@@ -20,6 +20,18 @@ const serviceRequestSchema = new mongoose.Schema({
     type: Date,
     required: [true, 'Please select a time slot']
   },
+  serviceNameSnapshot: {
+    type: String,
+    required: [true, 'Service name snapshot is required at the time of booking']
+  },
+  servicePriceSnapshot: {
+    type: Number,
+    required: [true, 'Service price snapshot is required at the time of booking']
+  },
+  customerAddress: { // Address where the service will be provided
+    type: String,
+    // required: [true, 'Customer address is required for the service'] // Making it optional for now
+  },
   status: {
     type: String,
     enum: ['pending', 'accepted', 'rejected', 'completed', 'in-progress'],

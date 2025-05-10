@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Calendar, Clock, User, MapPin, DollarSign, ExternalLink, Briefcase } from 'lucide-react';
+import React, { useEffect, useState, Fragment } from 'react'; // Added Fragment
+import { Calendar, Clock, User, MapPin, DollarSign, ExternalLink, Briefcase, MessageSquare, X as XIcon } from 'lucide-react'; // Added MessageSquare, XIcon
 
 // Re-declared Order interface (ideally import from a central types file)
 interface Order {
@@ -32,6 +32,9 @@ interface OrderCardProps {
 
 const OrderCard: React.FC<OrderCardProps> = ({ order, onViewDetails, onUpdateStatus }) => {
   const [timeLeft, setTimeLeft] = useState('');
+  const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
+  const [noteText, setNoteText] = useState('');
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false); // State for payment modal
 
   useEffect(() => {
     // Countdown logic for 'accepted' (booked) orders until their time_slot
@@ -88,32 +91,57 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onViewDetails, onUpdateSta
     }
   };
 
-  // Action buttons might change based on customer capabilities (e.g., cancel a booked order)
-  const renderActionButton = () => {
-    // Example: Allow cancellation if order is 'accepted' (booked) and not too close to service time
-    // This logic would need backend support and more complex rules
-    // if (order.status === 'accepted') {
-    //   return (
-    //     <button
-    //       onClick={() => onUpdateStatus(order._id, 'cancelled')} // Assuming 'cancelled' is a valid target status
-    //       className="inline-flex items-center px-3 py-2 border border-red-500 shadow-sm text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50"
-    //     >
-    //       Cancel Order
-    //     </button>
-    //   );
-    // }
+  // Action buttons might change based on customer capabilities
+  const renderActionButtons = () => {
+    const actionButtons = [];
+
+    if (order.status === 'completed') {
+      actionButtons.push(
+        <button
+          key="pay-here"
+          onClick={() => setIsPaymentModalOpen(true)}
+          className="inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+        >
+          Pay Here
+        </button>
+      );
+    } else {
+      if (order.status === 'accepted' || order.status === 'in-progress') {
+        actionButtons.push(
+          <button
+            key="add-note"
+            onClick={() => setIsNoteModalOpen(true)}
+            className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400" // ring-secondary might not be defined, using gray
+            title="Add Note for Provider"
+          >
+            <MessageSquare className="h-4 w-4" />
+          </button>
+        );
+      }
+      actionButtons.push(
+        <button
+          key="view-details"
+          onClick={() => onViewDetails(order)}
+          className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+        >
+          View Details
+          <ExternalLink className="ml-1 h-4 w-4" />
+        </button>
+      );
+    }
   
-    return (
-      <button
-        onClick={() => onViewDetails(order)}
-        className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-      >
-        View Details
-        <ExternalLink className="ml-1 h-4 w-4" />
-      </button>
-    );
+    return <div className="flex space-x-2">{actionButtons}</div>;
   };
   
+  const handleSendNote = () => {
+    // In a real app, this would make an API call to save the note
+    console.log(`Note for order ${order._id}: ${noteText}`);
+    // Potentially clear noteText and close modal, or show success/error
+    setIsNoteModalOpen(false);
+    setNoteText(''); // Clear the note text after sending
+    // toast.success('Note sent to provider!'); // Example toast
+  };
+
   const displayDate = new Date(order.time_slot).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
   const displayTime = new Date(order.time_slot).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
 
@@ -189,10 +217,110 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onViewDetails, onUpdateSta
             </div>
           )}
           <div className="ml-auto"> {/* Pushes button to the right */}
-            {renderActionButton()}
+            {renderActionButtons()}
           </div>
         </div>
       </div>
+
+      {isNoteModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md z-50">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium">Add Note for Provider</h3>
+              <button onClick={() => setIsNoteModalOpen(false)} className="text-gray-400 hover:text-gray-600">
+                <XIcon className="h-6 w-6" />
+              </button>
+            </div>
+            <textarea
+              value={noteText}
+              onChange={(e) => setNoteText(e.target.value)}
+              rows={4}
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
+              placeholder="Enter any specific instructions or details for the provider..."
+            />
+            <div className="mt-4 flex justify-end space-x-2">
+              <button
+                onClick={() => {
+                  setIsNoteModalOpen(false);
+                  setNoteText(''); // Clear text if cancelled
+                }}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md border border-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSendNote}
+                className="px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-md"
+              >
+                Send Note
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isPaymentModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-lg z-50">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold text-gray-800">Bill Details & Payment</h3>
+              <button onClick={() => setIsPaymentModalOpen(false)} className="text-gray-400 hover:text-gray-600">
+                <XIcon className="h-6 w-6" />
+              </button>
+            </div>
+            
+            <div className="space-y-3 mb-6">
+              <div>
+                <p className="text-sm text-gray-500">Provider:</p>
+                <p className="text-md text-gray-700">{order.provider.name}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Service:</p>
+                <p className="text-md text-gray-700">{order.serviceNameSnapshot || order.service.name}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Date & Time:</p>
+                <p className="text-md text-gray-700">{displayDate} at {displayTime}</p>
+              </div>
+              <hr className="my-3"/>
+              <div>
+                <p className="text-sm text-gray-500">Service Charge:</p>
+                <p className="text-xl font-bold text-gray-800">
+                  ${(order.servicePriceSnapshot || order.service.price).toFixed(2)}
+                </p>
+              </div>
+               {/* Add other bill details here if available, e.g., taxes, discounts */}
+              <div className="border-t pt-3 mt-3">
+                <p className="text-sm text-gray-500">Total Amount Due:</p>
+                <p className="text-2xl font-bold text-primary">
+                 ${(order.servicePriceSnapshot || order.service.price).toFixed(2)}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
+              <button
+                onClick={() => setIsPaymentModalOpen(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md border border-gray-300 w-full sm:w-auto"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  console.log(`Attempting payment for order ${order._id} of amount ${(order.servicePriceSnapshot || order.service.price).toFixed(2)}`);
+                  // Actual payment integration would go here
+                  setIsPaymentModalOpen(false);
+                  // Potentially update order status to 'paid' or similar after successful payment
+                  // toast.success('Payment successful!'); 
+                }}
+                className="px-6 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-md w-full sm:w-auto"
+              >
+                Pay Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

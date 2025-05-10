@@ -145,31 +145,40 @@ exports.getServiceDetails = catchAsync(async (req, res, next) => {
 });
 
 exports.createServiceRequest = catchAsync(async (req, res, next) => {
-  const { service_id, time_slot } = req.body;
+  const { service_id, time_slot, customerAddress } = req.body; // Added customerAddress
 
   // 1. Validate required fields
-  if (!service_id || !time_slot) {
-    return next(new AppError('Please provide service ID and time slot', 400));
+  // Customer address might be optional depending on service type, handled by model if made required there.
+  if (!service_id || !time_slot) { 
+    return next(new AppError('Please provide service ID and time slot.', 400));
   }
 
   // 2. Validate time slot
   const requestedTime = new Date(time_slot);
-  if (requestedTime < Date.now()) {
-    return next(new AppError('Time slot must be in the future', 400));
+  if (isNaN(requestedTime.getTime()) || requestedTime < new Date()) { // Enhanced validation
+    return next(new AppError('Time slot must be a valid date in the future.', 400));
   }
 
-  // 3. Check if service exists
-  const service = await Service.findById(service_id);
+  // 3. Check if service exists and get its details
+  const service = await Service.findById(service_id).populate('provider', '_id'); // Ensure provider ID is available
   if (!service) {
-    return next(new AppError('Service not found', 404));
+    return next(new AppError('Service not found.', 404));
+  }
+  if (!service.provider || !service.provider._id) {
+    return next(new AppError('Service provider information is missing.', 500));
   }
 
-  // 4. Create service request
+
+  // 4. Create service request with snapshots
   const newRequest = await ServiceRequest.create({
     service: service_id,
     customer: req.user.id,
+    provider: service.provider._id, // Assign the provider from the service
     time_slot: requestedTime,
-    status: 'pending'
+    serviceNameSnapshot: service.name, // Snapshot service name
+    servicePriceSnapshot: service.price, // Snapshot service price
+    customerAddress: customerAddress, // Store customer address
+    status: 'pending' 
   });
 
   res.status(201).json({
@@ -185,7 +194,8 @@ exports.getCustomerOrders = catchAsync(async (req, res, next) => {
 
   const orders = await ServiceRequest.find({
     customer: customerId,
-    status: 'accepted' // Or any status that signifies a booked/confirmed order
+    // Fetch all relevant statuses for customer's order view (active and historical)
+    status: { $in: ['accepted', 'in-progress', 'completed', 'rejected', 'pending'] } 
   })
   .populate('service', 'name description price') // Populate service details
   .populate('provider', 'name email') // Populate provider details

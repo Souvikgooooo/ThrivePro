@@ -14,3 +14,13 @@
 {"level":"info","message":"MongoDB connection established","timestamp":"2025-05-10T15:34:43.222Z"}
 {"isOperational":true,"level":"error","message":"Incorrect email or password","stack":"Error: Incorrect email or password\n    at D:\\nqt 5\\viuuu\\Backend\\controllers\\authController.js:154:17","status":"error","statusCode":401,"timestamp":"2025-05-10T15:35:27.117Z"}
 {"level":"info","message":"MongoDB connection established","timestamp":"2025-05-10T15:37:30.823Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-05-10T18:33:25.546Z"}
+{"isOperational":true,"level":"error","message":"Please provide email and password","stack":"Error: Please provide email and password\n    at D:\\nqt 5\\viuuu\\Backend\\controllers\\authController.js:147:17\n    at D:\\nqt 5\\viuuu\\Backend\\utils\\catchAsync.js:4:13\n    at Layer.handle [as handle_request] (D:\\nqt 5\\viuuu\\Backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (D:\\nqt 5\\viuuu\\Backend\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at Route.dispatch (D:\\nqt 5\\viuuu\\Backend\\node_modules\\express\\lib\\router\\route.js:119:3)\n    at Layer.handle [as handle_request] (D:\\nqt 5\\viuuu\\Backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at D:\\nqt 5\\viuuu\\Backend\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (D:\\nqt 5\\viuuu\\Backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (D:\\nqt 5\\viuuu\\Backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at Function.handle (D:\\nqt 5\\viuuu\\Backend\\node_modules\\express\\lib\\router\\index.js:175:3)","status":"error","statusCode":400,"timestamp":"2025-05-10T18:58:56.938Z"}
+{"isOperational":true,"level":"error","message":"Incorrect email or password","stack":"Error: Incorrect email or password\n    at D:\\nqt 5\\viuuu\\Backend\\controllers\\authController.js:154:17","status":"error","statusCode":401,"timestamp":"2025-05-10T19:07:51.862Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-05-10T19:12:50.005Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-05-10T19:26:21.210Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-05-10T19:26:49.415Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-05-10T19:35:59.022Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-05-10T19:36:26.547Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-05-10T20:06:46.832Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-05-10T20:07:12.713Z"}

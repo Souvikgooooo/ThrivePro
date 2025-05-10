@@ -29,7 +29,7 @@ import axios, { AxiosError } from 'axios'; // Import axios and AxiosError
 import { useUser } from '@/context/UserContext.tsx'; // Import useUser
 import Layout from '../components/layout/Layout';
 import OrderTabs from '../components/orders/OrderTabs';
-import OrderCard from '../components/orders/OrderCard';
+import OrderCard from '../components/orders/OrderCard.tsx'; // Explicitly import .tsx
 import OrderDetails from '../components/orders/OrderDetails';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
