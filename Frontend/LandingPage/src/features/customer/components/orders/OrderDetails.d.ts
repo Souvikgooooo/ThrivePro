@@ -18,7 +18,7 @@ interface Order {
     email?: string;
   };
   time_slot: string; // ISO Date string
-  status: 'pending' | 'accepted' | 'rejected' | 'completed' | 'in-progress'; // Match backend enum
+  status: 'pending' | 'accepted' | 'rejected' | 'completed' | 'in-progress' | 'PaymentCompleted'; // Match backend enum
   createdAt: string; // ISO Date string
   serviceNameSnapshot?: string;
   servicePriceSnapshot?: number;
@@ -29,6 +29,7 @@ interface Order {
 interface OrderDetailsProps {
   order: Order;
   onClose: () => void;
+  onPaymentSuccess: (orderId: string) => void;
 }
 
 declare const OrderDetails: React.FC<OrderDetailsProps>;

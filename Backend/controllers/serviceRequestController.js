@@ -76,7 +76,48 @@ exports.createServiceRequest = catchAsync(async (req, res, next) => {
 });
 
 // TODO: Implement other controller functions as outlined in serviceRequestRoutes.js
-// exports.getCustomerServiceRequests = catchAsync(async (req, res, next) => { ... });
+
+exports.getCustomerServiceRequests = catchAsync(async (req, res, next) => {
+  const customerId = req.user.id; // Assuming authMiddleware.authenticate populates req.user
+  console.log(`[getCustomerServiceRequests] Attempting to fetch requests for customer ID: ${customerId}`);
+
+  const serviceRequests = await ServiceRequest.find({ customer: customerId })
+    .populate('provider', 'name email') // Populate provider's name and email
+    .populate('service', 'name description') // Populate basic service details
+    .sort({ createdAt: -1 }); // Show newest requests first
+
+  if (!serviceRequests) {
+    return next(new AppError('Could not retrieve your service requests or none found.', 404));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    results: serviceRequests.length,
+    data: {
+      serviceRequests,
+    },
+  });
+});
+
+exports.getServiceRequestDetails = catchAsync(async (req, res, next) => {
+  const { id: requestId } = req.params;
+  const customerId = req.user.id;
+
+  const serviceRequest = await ServiceRequest.findOne({ _id: requestId, customer: customerId })
+    .populate('provider', 'name email phone_number profile_image') // Populate provider details
+    .populate('service', 'name description images'); // Populate service details
+
+  if (!serviceRequest) {
+    return next(new AppError('Service request not found or you are not authorized to view it.', 404));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      serviceRequest,
+    },
+  });
+});
 
 exports.getProviderServiceRequests = catchAsync(async (req, res, next) => {
   const providerId = req.user.id; // Assuming authMiddleware.authenticate populates req.user
@@ -146,6 +187,34 @@ exports.updateServiceRequestStatus = catchAsync(async (req, res, next) => {
 
   serviceRequest.status = newStatus;
   await serviceRequest.save();
+
+  // If status is 'completed', generate a bill
+  if (newStatus === 'completed') {
+    const Bill = require('../models/Bill'); // Ensure Bill model is imported
+    try {
+      // Check if a bill already exists for this request to prevent duplicates
+      const existingBill = await Bill.findOne({ request: serviceRequest._id });
+      if (!existingBill) {
+        await Bill.create({
+          request: serviceRequest._id,
+          customer: serviceRequest.customer,
+          provider: serviceRequest.provider,
+          service: serviceRequest.service,
+          amount: serviceRequest.servicePriceSnapshot, // Use the snapshotted price
+          status: 'unpaid', // Corrected initial bill status
+          // You might want to add bill_date, due_date, etc.
+        });
+        console.log(`Bill created for ServiceRequest ID: ${serviceRequest._id}`);
+      } else {
+        console.log(`Bill already exists for ServiceRequest ID: ${serviceRequest._id}`);
+      }
+    } catch (billError) {
+      console.error(`Error creating bill for ServiceRequest ID ${serviceRequest._id}:`, billError);
+      // Decide if this should be a critical error stopping the response,
+      // or just log it and continue. For now, logging.
+      // return next(new AppError('Failed to generate bill for the completed service.', 500));
+    }
+  }
 
   // TODO: Potentially send notifications to customer upon status change
 

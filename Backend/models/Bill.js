@@ -21,4 +21,5 @@ const billSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Bill', billSchema);
+// Check if the model already exists before compiling it
+module.exports = mongoose.models.Bill || mongoose.model('Bill', billSchema);

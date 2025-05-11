@@ -17,7 +17,7 @@ interface Order {
     email?: string;
   };
   time_slot: string; // ISO Date string
-  status: 'pending' | 'accepted' | 'rejected' | 'completed' | 'in-progress';
+  status: 'pending' | 'accepted' | 'rejected' | 'completed' | 'in-progress' | 'PaymentCompleted'; // Added PaymentCompleted
   createdAt: string; // ISO Date string
   serviceNameSnapshot?: string; // Optional: if used from backend
   servicePriceSnapshot?: number; // Optional: if used from backend
@@ -70,12 +70,11 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onViewDetails, onUpdateSta
       case 'pending': return 'Pending Provider'; // Customer is waiting for provider to accept
       case 'accepted': return 'Booked'; // Provider accepted, service is upcoming
       case 'in-progress': return 'Service in Progress';
-      case 'completed': return 'Completed';
+      case 'completed': return 'Service Completed'; // Clarified: service done, payment pending
+      case 'PaymentCompleted': return 'Payment Completed'; // New status
       case 'rejected': return 'Rejected by Provider';
       default:
-        // This case should ideally not be reached if order.status is always one of the above.
-        // Return a generic or the status itself if it's an unexpected string.
-        const statusVal: any = order.status; // Use 'any' to bypass 'never' for this line
+        const statusVal: any = order.status; 
         return typeof statusVal === 'string' ? statusVal.charAt(0).toUpperCase() + statusVal.slice(1) : 'Unknown Status';
     }
   };
@@ -84,8 +83,9 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onViewDetails, onUpdateSta
     switch (order.status) {
       case 'pending': return 'bg-orange-100 text-orange-800';
       case 'accepted': return 'bg-blue-100 text-blue-800';
-      case 'in-progress': return 'bg-indigo-100 text-indigo-800'; // Color for in-progress
-      case 'completed': return 'bg-green-100 text-green-800';
+      case 'in-progress': return 'bg-indigo-100 text-indigo-800';
+      case 'completed': return 'bg-yellow-100 text-yellow-800'; // Changed color to indicate pending payment
+      case 'PaymentCompleted': return 'bg-green-100 text-green-800'; // Color for payment completed
       case 'rejected': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
     }
@@ -95,17 +95,24 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onViewDetails, onUpdateSta
   const renderActionButtons = () => {
     const actionButtons = [];
 
-    if (order.status === 'completed') {
+    // "Pay Here" button should appear if service is 'completed' (meaning service done, payment pending)
+    if (order.status === 'completed') { 
       actionButtons.push(
         <button
           key="pay-here"
-          onClick={() => setIsPaymentModalOpen(true)}
+          onClick={() => onViewDetails(order)} // Open OrderDetails which contains the payment logic
           className="inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
         >
           Pay Here
         </button>
       );
-    } else {
+    } else if (order.status === 'PaymentCompleted') {
+      actionButtons.push(
+        <div key="payment-done" className="text-sm font-medium text-green-600">
+          Payment Done
+        </div>
+      );
+    } else if (order.status !== 'rejected') { // For other non-final states (excluding rejected and PaymentCompleted)
       if (order.status === 'accepted' || order.status === 'in-progress') {
         actionButtons.push(
           <button

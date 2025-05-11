@@ -11,7 +11,10 @@ router.use(authMiddleware.authenticate);
 router.post('/', serviceRequestController.createServiceRequest);
 
 // GET /api/service-requests/customer - Customer views their own service requests
-// router.get('/customer', serviceRequestController.getCustomerServiceRequests); // Keep commented if not implementing now
+router.get('/customer', serviceRequestController.getCustomerServiceRequests); // Uncommented
+
+// GET /api/service-requests/:id/customer - Customer views details of a specific request
+router.get('/:id/customer', serviceRequestController.getServiceRequestDetails);
 
 // GET /api/service-requests/provider - Provider views requests assigned to them
 router.get('/provider', authMiddleware.providerRoleAuthenticate, serviceRequestController.getProviderServiceRequests); // Reinstated providerRoleAuthenticate

@@ -34,7 +34,7 @@ const serviceRequestSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'accepted', 'rejected', 'completed', 'in-progress'],
+    enum: ['pending', 'accepted', 'rejected', 'completed', 'in-progress', 'PaymentCompleted'], // Added 'PaymentCompleted'
     default: 'pending'
   },
   createdAt: {

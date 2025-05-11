@@ -1,11 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'; // Import axios
+import { useUser } from '@/context/UserContext'; // Import useUser for user details and token
 import { 
   X, User, Calendar, Clock, MapPin, Phone, Mail, 
   CreditCard, File, MessageSquare, DollarSign, Tag 
 } from 'lucide-react';
 
-const OrderDetails = ({ order, onClose }) => {
+const OrderDetails = ({ order, onClose, onPaymentSuccess }) => { // Added onPaymentSuccess prop
   const [customerNote, setCustomerNote] = useState('');
+  const { user } = useUser(); // Get user from context
+
+  // Effect to load Razorpay script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   if (!order) return null;
 
@@ -22,7 +36,11 @@ const OrderDetails = ({ order, onClose }) => {
       },
       'completed': {
         className: 'bg-green-100 text-green-800',
-        label: 'Completed'
+        label: 'Service Completed' // Clarified label
+      },
+      'PaymentCompleted': { // Added new status
+        className: 'bg-emerald-100 text-emerald-800', // Different green for distinction
+        label: 'Payment Completed'
       },
       'cancelled': {
         className: 'bg-red-100 text-red-800',
@@ -235,10 +253,108 @@ const OrderDetails = ({ order, onClose }) => {
               Close
             </button>
 
-            {order.status === 'completed' && (
+            {order.status === 'completed' && ( // Assuming 'completed' means service done, pending payment
               <button
-                onClick={() => {
-                  console.log('Pay Now for completed service');
+                onClick={async () => {
+                  if (!user || !user.accessToken) {
+                    alert('Please log in to make a payment.');
+                    return;
+                  }
+                  console.log('Pay Now for completed service, order ID:', order._id);
+                  const orderAmount = (order.servicePriceSnapshot ?? order.service?.price ?? 0) * 100; // Amount in paise
+
+                  try {
+                    // Step 1: Create Razorpay Order by calling backend
+                    const orderCreationResponse = await axios.post(
+                      `http://localhost:8000/api/payment/order`,  // Corrected path: /api/payment/order
+                      { 
+                        amount: orderAmount, 
+                        currency: 'INR',
+                        // receipt: `rcpt_${order._id}` // Optional: send your internal order/bill ID as receipt
+                      },
+                      { headers: { Authorization: `Bearer ${user.accessToken}` } }
+                    );
+
+                    const razorpayOrder = orderCreationResponse.data;
+                    if (!razorpayOrder || !razorpayOrder.order_id) {
+                      alert('Could not create Razorpay order. Please try again.');
+                      return;
+                    }
+
+                    // Step 2: Open Razorpay Checkout
+                    const options = {
+                      key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_V3eLJGsq0GMluZ", // Use Vite's way to access env vars
+                      amount: razorpayOrder.amount, 
+                      currency: razorpayOrder.currency,
+                      name: 'ThrivePro Payment',
+                      description: `Payment for Order #${order._id}`,
+                      order_id: razorpayOrder.order_id,
+                      handler: async function (response) {
+                        // Step 3: Verify Payment with backend
+                        try {
+                          const verificationResponse = await axios.post(
+                            `http://localhost:8000/api/payment/payment/${order._id}`, // Corrected path: /api/payment/payment/:id
+                            {
+                              razorpay_order_id: response.razorpay_order_id,
+                              razorpay_payment_id: response.razorpay_payment_id,
+                              razorpay_signature: response.razorpay_signature,
+                            },
+                            { headers: { Authorization: `Bearer ${user.accessToken}` } }
+                          );
+
+                          if (verificationResponse.data.status === 'success') {
+                            alert('Payment successful! ' + verificationResponse.data.message);
+                            if (onPaymentSuccess) onPaymentSuccess(order._id); // Callback to refresh orders
+                            onClose(); // Close the modal
+                          } else {
+                            // Even if verification status is not 'success' but backend gives a specific message
+                            alert(verificationResponse.data.message || 'Payment verification returned an issue.');
+                          }
+                        } catch (verifyError) {
+                          console.error('Payment verification error:', verifyError);
+                          let errMsg = 'Payment verification failed.';
+                          if (axios.isAxiosError(verifyError) && verifyError.response?.data?.message) {
+                            errMsg = verifyError.response.data.message;
+                            // Handle specific "Bill already paid" error from backend
+                            if (errMsg.includes('Bill already paid')) {
+                              alert('This bill has already been paid. Refreshing order status.');
+                              if (onPaymentSuccess) onPaymentSuccess(order._id); // Refresh orders to show correct status
+                              onClose(); // Close the modal
+                              return; // Exit to prevent further generic error alert
+                            }
+                          }
+                          alert(errMsg);
+                        }
+                      },
+                      prefill: {
+                        name: user.name || '',
+                        email: user.email || '',
+                        contact: user.phone_number || '',
+                      },
+                      notes: {
+                        address: order.customerAddress || 'N/A',
+                        internal_order_id: order._id,
+                      },
+                      theme: {
+                        color: '#3399cc',
+                      },
+                    };
+                    
+                    const rzp = new window.Razorpay(options);
+                    rzp.on('payment.failed', function (response) {
+                      alert(`Payment failed: ${response.error.description} (Code: ${response.error.code})`);
+                      console.error('Razorpay payment failed:', response.error);
+                    });
+                    rzp.open();
+
+                  } catch (error) {
+                    console.error('Error initiating payment process:', error);
+                    let errorMessage = 'Could not initiate payment. Please try again.';
+                     if (axios.isAxiosError(error) && error.response?.data?.message) {
+                      errorMessage = error.response.data.message;
+                    }
+                    alert(errorMessage);
+                  }
                 }}
                 className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none"
               >
