@@ -28,7 +28,7 @@ const developers: Developer[] = [
     bio: 'Backend specialist focused on building robust and scalable APIs. Enjoys solving complex problems.',
     linkedin: 'https://linkedin.com/in/priyanathbhukta-demo',
     github: 'https://github.com/priyanathbhukta-demo',
-    imageUrl: '/src/assets/images/priyanath_placeholder.png', // Placeholder image path
+    imageUrl: '/src/assets/images/titas.png', // Placeholder image path
   },
   {
     id: 3,
