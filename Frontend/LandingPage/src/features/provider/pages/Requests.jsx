@@ -109,7 +109,7 @@ const Requests = () => {
     <Layout>
       <div className="page-container">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Service Requests</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Service Requests & Payment Confirmation</h1>
           <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
             {requests.length} new request{requests.length !== 1 ? 's' : ''}
           </span>

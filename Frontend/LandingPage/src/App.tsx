@@ -4,6 +4,7 @@ import { Car, GraduationCap, Home as HomeIcon, Lightbulb, Scissors, Wrench } fro
 import SignUp from './components/SignUp';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+import AboutDevelopersPage from './pages/AboutDevelopersPage'; // Added import
 import About from './components/About';
 import Services from './components/Services';
 import Blog from './components/Blog';
@@ -120,6 +121,7 @@ function App() {
         }
       />
       <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+      {/* <Route path="/about-developers" element={<AboutDevelopersPage />} /> {/* This line will be removed */}
 
       {/* Customer Routes */}
       <Route element={<ProtectedRoute allowedRoles={['customer']} />}>
@@ -129,6 +131,7 @@ function App() {
         <Route path="/customer/profile" element={<CustomerProfile />} />
         <Route path="/customer/book-service" element={<CustomerBookServicePage />} />
         <Route path="/customer/feedback" element={<CustomerFeedbackAndReviews />} />
+        <Route path="/customer/about" element={<AboutDevelopersPage />} /> {/* Changed route to /customer/about */}
         {/* Add other customer-specific routes here */}
       </Route>
 
@@ -140,6 +143,7 @@ function App() {
         <Route path="/provider/profile" element={<ProviderProfile />} />
         <Route path="/provider/requests" element={<ProviderRequests />} />
         <Route path="/provider/revenue" element={<ProviderRevenue />} />
+        <Route path="/provider/about" element={<AboutDevelopersPage />} /> {/* Added route for provider */}
         {/* Add other provider-specific routes here */}
       </Route>
       

@@ -15,12 +15,12 @@ const ReviewList = ({ reviews }) => {
       ))}
 
       {visibleCount < reviews.length && (
-        <div className="text-center mt-6">
+        <div className="text-center mt-8">
           <button
             onClick={loadMore}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="px-6 py-3 bg-gradient-to-r from-teal-500 to-blue-600 text-white rounded-lg shadow-md hover:from-teal-600 hover:to-blue-700 transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
           >
-            Load More
+            Load More Reviews
           </button>
         </div>
       )}

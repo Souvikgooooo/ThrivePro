@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { Check } from 'lucide-react';
+import { Check, Users } from 'lucide-react'; // Added Users icon
+import { Link } from 'react-router-dom'; // Added Link import
 
 const AboutSection = () => {
   const features = [
@@ -48,6 +49,15 @@ const AboutSection = () => {
                     <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                   </svg>
                 </a>
+              </div>
+              <div className="mt-8"> {/* Increased margin-top */}
+                <Link 
+                  to="/provider/about" 
+                  className="inline-flex items-center justify-center px-8 py-3.5 border-2 border-yellow-400 text-base font-semibold rounded-lg shadow-lg text-yellow-400 bg-transparent hover:bg-yellow-400 hover:text-slate-900 focus:outline-none focus:ring-4 focus:ring-yellow-300/50 transform transition-all duration-300 ease-in-out hover:scale-105 group hover:shadow-yellow-500/40"
+                >
+                  <Users className="mr-3 h-6 w-6 text-yellow-400 group-hover:text-slate-900 transition-colors duration-300" /> 
+                  Meet Our Talented Developers
+                </Link>
               </div>
             </div>
             

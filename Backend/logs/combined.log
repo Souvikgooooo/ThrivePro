@@ -65,3 +65,9 @@
 {"level":"info","message":"MongoDB connection established","timestamp":"2025-05-11T15:03:19.816Z"}
 {"level":"info","message":"MongoDB connection established","timestamp":"2025-05-11T15:03:34.614Z"}
 {"level":"info","message":"MongoDB connection established","timestamp":"2025-05-11T15:04:05.084Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-05-11T16:10:11.846Z"}
+{"isOperational":true,"level":"error","message":"User already exists with this email","stack":"Error: User already exists with this email\n    at D:\\ThrivePro\\Backend\\controllers\\authController.js:40:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","status":"error","statusCode":400,"timestamp":"2025-05-11T16:11:36.793Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-05-11T18:18:39.696Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-05-11T19:37:40.680Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-05-11T20:56:13.243Z"}
+{"level":"warn","message":"MongoDB connection disconnected","timestamp":"2025-05-11T21:01:32.827Z"}

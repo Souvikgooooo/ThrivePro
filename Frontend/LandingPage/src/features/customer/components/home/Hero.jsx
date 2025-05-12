@@ -27,8 +27,11 @@ const Hero = () => {
                   Book Services Now
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
-                <Link to="/customer/about" className="btn-secondary inline-flex items-center"> {/* Assuming /about should also be prefixed if it's customer specific */}
-                  Learn More
+                <Link 
+                  to="/customer/about" 
+                  className="inline-flex items-center justify-center px-6 py-3 border-2 border-yellow-400 text-base font-medium rounded-md shadow-sm text-yellow-500 bg-transparent hover:bg-yellow-400 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transform transition-all duration-300 ease-in-out hover:scale-105 group"
+                >
+                  <b>Learn More</b>
                 </Link>
               </div>
             </div>
