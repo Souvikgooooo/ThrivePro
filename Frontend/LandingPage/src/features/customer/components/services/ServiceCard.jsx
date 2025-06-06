@@ -22,7 +22,7 @@ const ServiceCard = ({ service }) => {
           <p className="mt-2 text-sm text-gray-500 line-clamp-2">{service.description}</p>
 
           <div className="mt-4 flex items-center">
-            <span className="text-2xl font-bold text-gray-900">${service.price}</span>
+            <span className="text-2xl font-bold text-gray-900">₹ {service.price}</span>
             {service.duration && (
               <span className="ml-2 text-sm text-gray-500">/ {service.duration}</span>
             )}

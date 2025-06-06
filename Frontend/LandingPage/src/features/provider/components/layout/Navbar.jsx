@@ -18,7 +18,6 @@ const Navbar = () => {
     { name: 'Home', to: `${providerBasePath}/` },
     { name: 'Services', to: `${providerBasePath}/services` },
     { name: 'Orders', to: `${providerBasePath}/orders` },
-    { name: 'Revenue', to: `${providerBasePath}/revenue` },
     { name: 'Requests', to: `${providerBasePath}/requests` },
   ];
 

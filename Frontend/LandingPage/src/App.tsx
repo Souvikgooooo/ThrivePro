@@ -31,7 +31,6 @@ import ProviderNotFound from './features/provider/pages/NotFound.jsx';
 import ProviderOrders from './features/provider/pages/Orders.jsx';
 import ProviderProfile from './features/provider/pages/Profile.jsx';
 import ProviderRequests from './features/provider/pages/Requests.jsx';
-import ProviderRevenue from './features/provider/pages/Revenue.jsx';
 import ProviderServices from './features/provider/pages/Services.jsx';
 
 interface LandingPageContentProps {
@@ -142,7 +141,6 @@ function App() {
         <Route path="/provider/orders" element={<ProviderOrders />} />
         <Route path="/provider/profile" element={<ProviderProfile />} />
         <Route path="/provider/requests" element={<ProviderRequests />} />
-        <Route path="/provider/revenue" element={<ProviderRevenue />} />
         <Route path="/provider/about" element={<AboutDevelopersPage />} /> {/* Added route for provider */}
         {/* Add other provider-specific routes here */}
       </Route>

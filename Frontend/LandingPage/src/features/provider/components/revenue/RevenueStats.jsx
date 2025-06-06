@@ -36,7 +36,7 @@ const RevenueStats = ({ period }) => {
     daily: [
       {
         title: "Total Revenue",
-        value: "$435.25",
+        value: "Rs435.25",
         delta: 12.5,
         icon: DollarSign,
         deltaType: "positive"
@@ -59,7 +59,7 @@ const RevenueStats = ({ period }) => {
     weekly: [
       {
         title: "Total Revenue",
-        value: "$2,874.30",
+        value: "Rs2,874.30",
         delta: 23.6,
         icon: DollarSign,
         deltaType: "positive"
@@ -82,7 +82,7 @@ const RevenueStats = ({ period }) => {
     monthly: [
       {
         title: "Total Revenue",
-        value: "$12,345.67",
+        value: "Rs12,345.67",
         delta: 18.2,
         icon: DollarSign,
         deltaType: "positive"
@@ -105,7 +105,7 @@ const RevenueStats = ({ period }) => {
     yearly: [
       {
         title: "Total Revenue",
-        value: "$148,532.90",
+        value: "Rs148,532.90",
         delta: 32.7,
         icon: DollarSign,
         deltaType: "positive"

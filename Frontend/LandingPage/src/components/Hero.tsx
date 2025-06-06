@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
+import TypingEffectText from './ui/TypingEffectText'; // Import the new component
 
 interface HeroProps {
   onLoginClick: () => void;
@@ -19,9 +20,9 @@ const Hero: React.FC<HeroProps> = ({ onLoginClick }) => {
               <span className="block">All in One Place!</span>
             </h1>
             {/* Text colors made theme aware */}
-            <p className="mt-6 text-xl text-muted-foreground"> 
-              Access all the services you need, all in one place - fast, easy, and hassle-free!
-            </p>
+            <div className="mt-6 text-xl text-muted-foreground h-20"> {/* Added a fixed height to prevent layout shift during typing */}
+              <TypingEffectText text="Easily book trusted local services, stay connected with top providers, and enjoy a seamless experience—all through our all-in-one service booking platform." speed={150} /> {/* Increased speed for testing */}
+            </div>
             <button 
               className="mt-8 bg-primary text-primary-foreground px-8 py-3 rounded-full hover:bg-primary/90 transition-all duration-300 inline-flex items-center group shadow-md hover:shadow-lg transform hover:-translate-y-1" // Added shadow and transform
               onClick={onLoginClick}

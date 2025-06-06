@@ -7,7 +7,6 @@ const AboutSection = () => {
   const features = [
     'Easy service management',
     'Customer booking system',
-    'Revenue tracking and reports',
     'Service request management',
     'Business profile customization',
     'Order history and analytics'

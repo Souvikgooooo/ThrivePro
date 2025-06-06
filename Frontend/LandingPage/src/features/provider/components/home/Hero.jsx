@@ -2,6 +2,7 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import TypingEffectText from '../../../../components/ui/TypingEffectText'; // Corrected import path
 
 const Hero = () => {
   return (
@@ -18,9 +19,9 @@ const Hero = () => {
                 <span className="block text-primary">Provider Platform</span>
               </span>
             </h1>
-            <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
-              Manage your service business efficiently, connect with customers, and grow your revenue with our all-in-one platform designed for local service providers.
-            </p>
+            <div className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl h-24"> {/* Added fixed height */}
+              <TypingEffectText text="Manage your service business efficiently, connect with customers, and grow your revenue with our all-in-one platform designed for local service providers." speed={50} />
+            </div>
             <div className="mt-8 sm:max-w-lg sm:mx-auto sm:text-center lg:text-left lg:mx-0">
               <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-start sm:justify-center lg:justify-start">
                 <Link to="/provider/services" className="btn-primary inline-flex items-center">

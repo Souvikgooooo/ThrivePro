@@ -13,6 +13,7 @@ interface Service {
 interface Provider {
   _id: string;
   name: string;
+  charges?: string; // Added charges field
   // Add other relevant provider details if needed, e.g., averageRating, specificPrice
 }
 
@@ -32,6 +33,7 @@ const BookServicePage: React.FC = () => {
   const [availableProviders, setAvailableProviders] = useState<Provider[]>([]);
   const [selectedProviderId, setSelectedProviderId] = useState<string | null>(null);
   const [providersLoading, setProvidersLoading] = useState<boolean>(false);
+  const [totalCharges, setTotalCharges] = useState<number>(service.price); // Initialize with base service price
 
   if (!service) return <div>404 - Service Not Found</div>;
 
@@ -97,7 +99,16 @@ const BookServicePage: React.FC = () => {
   }, [service, user]); // Added user to dependency array
 
   const handleProviderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedProviderId(e.target.value);
+    const selectedId = e.target.value;
+    setSelectedProviderId(selectedId);
+
+    const selectedProvider = availableProviders.find(p => p._id === selectedId);
+    if (selectedProvider && selectedProvider.charges) {
+      const providerCharges = parseFloat(selectedProvider.charges);
+      setTotalCharges(service.price + providerCharges);
+    } else {
+      setTotalCharges(service.price); // Reset to base price if no provider or charges
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -140,7 +151,7 @@ const BookServicePage: React.FC = () => {
       providerId: selectedProviderId,
       // service_id: service._id, // Backend will look up service by name and providerId
       serviceName: service.name,
-      servicePrice: service.price,
+      servicePrice: totalCharges, // Send total charges to backend
       customerName: formData.customerName,
       customerPhoneNumber: formData.phoneNumber,
       customerAddress: formData.address,
@@ -194,7 +205,19 @@ const BookServicePage: React.FC = () => {
           </div>
           <div className="flex justify-between items-center mt-1">
             <p className="text-lg text-gray-700">Price:</p>
-            <p className="text-lg font-medium text-emerald-700">₹{service.price.toFixed(2)}</p>
+            <p className="text-lg font-medium text-emerald-700">Rs{service.price.toFixed(2)}</p>
+          </div>
+          {selectedProviderId && (
+            <div className="flex justify-between items-center mt-1">
+              <p className="text-lg text-gray-700">Provider Charges:</p>
+              <p className="text-lg font-medium text-emerald-700">
+                Rs{availableProviders.find(p => p._id === selectedProviderId)?.charges || '0.00'}
+              </p>
+            </div>
+          )}
+          <div className="flex justify-between items-center mt-3 pt-3 border-t border-emerald-300">
+            <p className="text-xl font-semibold text-gray-800">Total Bill:</p>
+            <p className="text-xl font-bold text-emerald-800">Rs{totalCharges.toFixed(2)}</p>
           </div>
         </div>
 
@@ -217,7 +240,7 @@ const BookServicePage: React.FC = () => {
               </option>
               {availableProviders.map((provider) => (
                 <option key={provider._id} value={provider._id}> {/* Use provider._id for key and value */}
-                  {provider.name}
+                  {provider.name} {provider.charges ? `(Rs${provider.charges})` : ''}
                 </option>
               ))}
             </select>

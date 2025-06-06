@@ -93,7 +93,7 @@ exports.getProvidersByService = catchAsync(async (req, res, next) => {
   const providers = await User.find({
     role: 'provider',
     service: { $regex: new RegExp(`^${serviceName}$`, 'i') } // Case-insensitive exact match
-  }).select('_id name'); // Adjust fields as necessary, e.g., add averageRating, profileImage if available
+  }).select('_id name charges'); // Added charges to selected fields
 
   if (!providers || providers.length === 0) {
     // It's not an error if no providers are found, just an empty list.

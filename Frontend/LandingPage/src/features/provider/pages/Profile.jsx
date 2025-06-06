@@ -73,9 +73,9 @@ const Profile = () => {
   }
 
   return (
-    <Layout>
-      <div className="page-container">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Business Profile</h1>
+    <Layout className="bg-gray-50"> {/* Added subtle background to layout */}
+      <div className="max-w-3xl mx-auto p-4 md:p-8"> {/* Centered container with padding */}
+        <h1 className="text-3xl font-extrabold text-gray-900 mb-8 text-center">Business Profile</h1> {/* Enhanced title */}
 
         {isEditing ? (
           <ProfileForm

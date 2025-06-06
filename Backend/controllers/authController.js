@@ -19,6 +19,7 @@ exports.register = catchAsync(async (req, res, next) => {
     service, // This will now be the main service string for User model
     experience,
     tradeLicense,
+    charges, // Added charges
     // service: serviceName, // Keep original for separate Service model creation if needed, or adapt
     location_latitude, 
     location_longitude,
@@ -55,6 +56,7 @@ exports.register = catchAsync(async (req, res, next) => {
     if (service) userPayload.service = service;
     if (experience) userPayload.experience = experience;
     if (tradeLicense) userPayload.tradeLicense = tradeLicense;
+    if (charges) userPayload.charges = charges; // Add charges to payload
   }
 
   // Default location if not provided or invalid
@@ -133,6 +135,7 @@ exports.register = catchAsync(async (req, res, next) => {
         service: newUser.service,
         experience: newUser.experience,
         tradeLicense: newUser.tradeLicense,
+        charges: newUser.charges, // Include charges in response
       }),
     }
   });
@@ -193,6 +196,7 @@ exports.login = catchAsync(async (req, res, next) => {
         service: user.service || 'N/A',
         experience: user.experience || 'N/A',
         tradeLicense: user.tradeLicense || 'N/A',
+        charges: user.charges || 'N/A', // Include charges in login response
       }),
     }
   });

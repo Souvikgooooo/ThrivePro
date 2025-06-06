@@ -53,6 +53,9 @@ const userSchema = new mongoose.Schema({
   tradeLicense: { // E.g., License number or status
     type: String,
     // required: function() { return this.role === 'provider'; }
+  },
+  charges: { // Charges per service for the provider
+    type: String,
   }
 });
 

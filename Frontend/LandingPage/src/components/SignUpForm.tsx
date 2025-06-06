@@ -13,8 +13,7 @@ interface FormData {
   service?: string; // Only for service provider
   experience?: string; // Only for service provider
   tradeLicense?: string; // Only for service provider
-  location_latitude: string;
-  location_longitude: string;
+  charges?: string; // New field for service provider
   address: string;
 }
 
@@ -36,8 +35,6 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ role, onBack, onClose }) => {
     service: '',
     experience: '',
     tradeLicense: '',
-    location_latitude: '0',
-    location_longitude: '0',
     address: ''
   });
 
@@ -64,8 +61,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ role, onBack, onClose }) => {
             service: formData.service,
             experience: formData.experience,
             tradeLicense: formData.tradeLicense,
-            location_latitude: formData.location_latitude,
-            location_longitude: formData.location_longitude,
+            charges: formData.charges, // Include charges
           }),
         });
 
@@ -192,9 +188,6 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ role, onBack, onClose }) => {
                   className="w-full pl-3 text-gray-700 focus:outline-none"
                 >
                   <option value="">Choose Service</option>
-                  <option value="Plumbing">Plumbing</option>
-                  <option value="Electrical">Electrical</option>
-                  <option value="Carpentry">Carpentry</option>
                   <option value="Bridal Makeup">Bridal Makeup</option>
                   <option value="Facial Treatment">Facial Treatment</option>
                   <option value="Haircut & Styling">Haircut & Styling</option>
@@ -228,33 +221,18 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ role, onBack, onClose }) => {
                 />
               </div>
 
-              {/* Location Fields for Service Provider */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="location_latitude" className="block text-sm font-medium text-gray-700 mb-1">Latitude</label>
-                  <input
-                    type="text"
-                    name="location_latitude"
-                    id="location_latitude"
-                    placeholder="e.g., 22.5726"
-                    value={formData.location_latitude}
-                    onChange={handleChange}
-                    className="w-full pl-3 pr-3 py-3 text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600 transition-all"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="location_longitude" className="block text-sm font-medium text-gray-700 mb-1">Longitude</label>
-                  <input
-                    type="text"
-                    name="location_longitude"
-                    id="location_longitude"
-                    placeholder="e.g., 88.3639"
-                    value={formData.location_longitude}
-                    onChange={handleChange}
-                    className="w-full pl-3 pr-3 py-3 text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600 transition-all"
-                  />
-                </div>
+              <div className="flex items-center border border-gray-300 rounded-lg px-4 py-3 focus-within:ring-2 focus-within:ring-emerald-600 transition-all">
+                <CheckCircle className="w-6 h-6 text-gray-600" /> {/* Using CheckCircle as a generic icon */}
+                <input
+                  type="text"
+                  name="charges"
+                  placeholder="Add your charges (per service)"
+                  value={formData.charges}
+                  onChange={handleChange}
+                  className="w-full pl-3 text-gray-700 focus:outline-none"
+                />
               </div>
+
             </>
           )}
 
