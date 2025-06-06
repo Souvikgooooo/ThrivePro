@@ -63,7 +63,7 @@ const OrderDetails = ({ order, onClose }) => {
             </div>
             <div>
               <p className="text-sm text-gray-500">Total Amount</p>
-              <p className="text-2xl font-bold text-gray-900">${(order.servicePriceSnapshot ?? order.service?.price ?? 0).toFixed(2)}</p>
+              <p className="text-2xl font-bold text-gray-900">₹{(order.servicePriceSnapshot ?? order.service?.price ?? 0).toFixed(2)}</p>
             </div>
           </div>
           
@@ -164,7 +164,7 @@ const OrderDetails = ({ order, onClose }) => {
                     <p className="text-gray-900">{order.serviceNameSnapshot || order.service.name}</p>
                     <p className="text-sm text-gray-500">{order.service.description || 'Main service'}</p>
                   </div>
-                  <p className="font-medium text-gray-900">${(order.servicePriceSnapshot ?? order.service.price ?? 0).toFixed(2)}</p>
+                  <p className="font-medium text-gray-900">₹{(order.servicePriceSnapshot ?? order.service.price ?? 0).toFixed(2)}</p>
                 </div>
               )}
               {/* If order.items existed and was an array:
@@ -184,19 +184,19 @@ const OrderDetails = ({ order, onClose }) => {
               <div className="flex justify-between">
                 <p className="text-gray-500">Subtotal</p>
                 {/* Assuming subtotal is same as total if no tax/discounts are itemized separately from servicePriceSnapshot */}
-                <p className="text-gray-900">${((order.servicePriceSnapshot ?? order.service?.price ?? 0) - (order.tax ?? 0)).toFixed(2)}</p>
+                <p className="text-gray-900">₹{((order.servicePriceSnapshot ?? order.service?.price ?? 0) - (order.tax ?? 0)).toFixed(2)}</p>
               </div>
               
               {(order.tax ?? 0) > 0 && (
                 <div className="flex justify-between mt-2">
                   <p className="text-gray-500">Tax</p>
-                  <p className="text-gray-900">${(order.tax ?? 0).toFixed(2)}</p>
+                  <p className="text-gray-900">₹{(order.tax ?? 0).toFixed(2)}</p>
                 </div>
               )}
               
               <div className="flex justify-between mt-4 font-bold">
                 <p className="text-gray-900">Total</p>
-                <p className="text-gray-900">${(order.servicePriceSnapshot ?? order.service?.price ?? 0).toFixed(2)}</p>
+                <p className="text-gray-900">₹{(order.servicePriceSnapshot ?? order.service?.price ?? 0).toFixed(2)}</p>
               </div>
             </div>
           </div>

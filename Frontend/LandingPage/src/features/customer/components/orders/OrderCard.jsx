@@ -122,7 +122,7 @@ const OrderCard = ({ order, onViewDetails }) => {
           <DollarSign className="h-5 w-5 text-gray-400 mr-2" />
           {/* Use servicePriceSnapshot or service.price for amount, with fallback */}
           <span className="text-gray-900 font-semibold">
-            ${(order.servicePriceSnapshot ?? order.service?.price ?? 0).toFixed(2)}
+            ₹{(order.servicePriceSnapshot ?? order.service?.price ?? 0).toFixed(2)}
           </span>
         </div>
       </div>

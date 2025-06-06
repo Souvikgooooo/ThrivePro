@@ -98,11 +98,10 @@ const BookServicePage: React.FC = () => {
     }
   }, [service, user]); // Added user to dependency array
 
-  const handleProviderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedId = e.target.value;
-    setSelectedProviderId(selectedId);
+  const handleProviderCardClick = (providerId: string) => {
+    setSelectedProviderId(providerId);
 
-    const selectedProvider = availableProviders.find(p => p._id === selectedId);
+    const selectedProvider = availableProviders.find(p => p._id === providerId);
     if (selectedProvider && selectedProvider.charges) {
       const providerCharges = parseFloat(selectedProvider.charges);
       setTotalCharges(service.price + providerCharges);
@@ -225,28 +224,31 @@ const BookServicePage: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Provider Selection Dropdown */}
           <div>
-            <label htmlFor="provider" className="block text-sm font-medium text-gray-700 mb-1">Select Service Provider</label>
-            <select
-              id="provider"
-              name="provider"
-              value={selectedProviderId || ''}
-              onChange={handleProviderChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition duration-150"
-              required
-              disabled={providersLoading || availableProviders.length === 0}
-            >
-              <option value="" disabled>
-                {providersLoading ? 'Loading providers...' : (availableProviders.length === 0 && service?.name ? 'No providers available for this service' : 'Select a provider')}
-              </option>
-              {availableProviders.map((provider) => (
-                <option key={provider._id} value={provider._id}> {/* Use provider._id for key and value */}
-                  {provider.name} {provider.charges ? `(Rs${provider.charges})` : ''}
-                </option>
-              ))}
-            </select>
-            {providersLoading && <p className="text-xs text-gray-500 mt-1">Fetching providers...</p>}
-            {!providersLoading && availableProviders.length === 0 && service?.name && (
-              <p className="text-xs text-red-500 mt-1">Currently, no providers are listed for {service.name}. Please check back later.</p>
+            <h2 className="block text-sm font-medium text-gray-700 mb-2">Select Service Provider</h2>
+            {providersLoading ? (
+              <p className="text-center text-gray-500">Loading providers...</p>
+            ) : availableProviders.length === 0 ? (
+              <p className="text-center text-red-500">No providers available for this service.</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {availableProviders.map((provider) => (
+                  <div
+                    key={provider._id}
+                    className={`p-4 border rounded-lg shadow-sm cursor-pointer transition-all duration-200 ease-in-out
+                      ${selectedProviderId === provider._id
+                        ? 'border-sky-500 ring-2 ring-sky-500 bg-sky-50'
+                        : 'border-gray-300 bg-white hover:border-sky-400 hover:shadow-md'
+                      }`}
+                    onClick={() => handleProviderCardClick(provider._id)}
+                  >
+                    <h3 className="font-semibold text-lg text-gray-800">{provider.name}</h3>
+                    <p className="text-gray-600">Charges: <span className="font-medium text-emerald-700">Rs{provider.charges || '0.00'}</span></p>
+                    {selectedProviderId === provider._id && (
+                      <p className="text-sky-600 text-sm font-semibold mt-1">Selected</p>
+                    )}
+                  </div>
+                ))}
+              </div>
             )}
           </div>
 

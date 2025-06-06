@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Calendar, Clock, User, MapPin, DollarSign, ExternalLink } from 'lucide-react';
+import { Calendar, Clock, User, MapPin, IndianRupee, ExternalLink } from 'lucide-react';
 
 const OrderCard = ({ order, onViewDetails, onUpdateStatus }) => {
   const getStatusColor = (status) => {
@@ -53,8 +53,8 @@ const OrderCard = ({ order, onViewDetails, onUpdateStatus }) => {
         </div>
         
         <div className="flex items-center">
-          <DollarSign className="h-5 w-5 text-gray-400 mr-2" />
-          <span className="text-gray-900 font-semibold">${(order.servicePriceSnapshot ?? order.service?.price ?? 0).toFixed(2)}</span>
+          <IndianRupee className="h-5 w-5 text-gray-400 mr-2" />
+          <span className="text-gray-900 font-semibold">₹{(order.servicePriceSnapshot ?? order.service?.price ?? 0).toFixed(2)}</span>
         </div>
       </div>
       
