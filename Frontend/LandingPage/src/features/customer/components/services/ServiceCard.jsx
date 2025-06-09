@@ -15,22 +15,22 @@ const ServiceCard = ({ service }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-6 border border-gray-200 hover:border-primary/30 transition-colors">
+    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 hover:border-blue-400 transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-xl">
       <div className="flex justify-between items-start">
         <div className="flex-1">
-          <h3 className="text-lg font-medium text-gray-900">{service.name}</h3>
-          <p className="mt-2 text-sm text-gray-500 line-clamp-2">{service.description}</p>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">{service.name}</h3>
+          <p className="text-sm text-gray-600 line-clamp-3 mb-4">{service.description}</p>
 
-          <div className="mt-4 flex items-center">
-            <span className="text-2xl font-bold text-gray-900">₹ {service.price}</span>
+          <div className="flex items-center mb-4">
+            <span className="text-2xl font-bold text-blue-600">₹ {service.price}</span>
             {service.duration && (
               <span className="ml-2 text-sm text-gray-500">/ {service.duration}</span>
             )}
           </div>
 
           {service.category && (
-            <div className="mt-2">
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            <div className="mb-4">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-50 text-blue-700 border border-blue-200">
                 {service.category}
               </span>
             </div>
@@ -38,36 +38,40 @@ const ServiceCard = ({ service }) => {
         </div>
 
         {service.image && (
-          <div className="ml-4">
+        <div className="ml-4 flex-shrink-0">
             <img 
               src={service.image} 
               alt={service.name} 
-              className="h-20 w-20 object-cover rounded-lg" 
+              className="h-24 w-24 object-cover rounded-lg shadow-md" 
             />
           </div>
         )}
       </div>
 
       <div className="mt-6 flex justify-between items-center">
-        <div className="text-sm text-gray-500">
-          {service.availability ? "Available" : "Not Available"}
+        <div className="text-sm font-medium">
+          {service.availability ? (
+            <span className="text-green-600">Available</span>
+          ) : (
+            <span className="text-red-600">Not Available</span>
+          )}
         </div>
-        <div className="flex space-x-2 items-center">
+        <div className="flex space-x-3 items-center">
           {service.availability && (
             <button
               onClick={handleBookClick}
-              className="text-green-600 font-medium hover:text-green-800 transition-colors"
+              className="bg-blue-400 text-white px-5 py-2 rounded-full text-base font-semibold hover:bg-blue-500 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:scale-105"
             >
               Want to Book
             </button>
           )}
           <button
             onClick={toggleLike}
-            className={`p-2 rounded-md transition-colors focus:outline-none ${
-              isLiked ? 'text-red-500' : 'text-gray-500 hover:text-red-500 hover:bg-gray-100'
-            }`}
+            className={`p-2 rounded-full transition-colors focus:outline-none ${
+              isLiked ? 'text-red-500 bg-red-100' : 'text-gray-500 hover:text-red-600 hover:bg-gray-100'
+            } shadow-sm`}
           >
-            {isLiked ? <Heart fill="currentColor" size={18} /> : <Heart size={18} />}
+            {isLiked ? <Heart fill="currentColor" size={20} /> : <Heart size={20} />}
           </button>
         </div>
       </div>

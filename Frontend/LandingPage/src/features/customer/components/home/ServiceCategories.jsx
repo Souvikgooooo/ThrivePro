@@ -8,42 +8,42 @@ const services = [
     description: 'Salon services, spa treatments, personal grooming, and more.',
     icon: Scissors,
     color: 'bg-pink-100 text-pink-600',
-    link: '/services?category=beauty'
+    link: '/customer/services'
   },
   {
     name: 'Car Rental',
     description: 'Vehicle rentals, chauffeur services, and transportation solutions.',
     icon: Car,
     color: 'bg-blue-100 text-blue-600',
-    link: '/services?category=car-rental'
+    link: '/customer/services'
   },
   {
     name: 'Tuition',
     description: 'Academic tutoring, skill development, and educational services.',
     icon: BookOpen,
     color: 'bg-amber-100 text-amber-600',
-    link: '/services?category=tuition'
+    link: '/customer/services'
   },
   {
     name: 'Housekeeping',
     description: 'Home cleaning, maintenance, and property management services.',
     icon: Home,
     color: 'bg-green-100 text-green-600',
-    link: '/services?category=housekeeping'
+    link: '/customer/services'
   },
   {
     name: 'Plumbing',
     description: 'Plumbing repairs, installations, and maintenance services.',
     icon: Wrench,
     color: 'bg-indigo-100 text-indigo-600',
-    link: '/services?category=plumbing'
+    link: '/customer/services'
   },
   {
     name: 'Electrician',
     description: 'Electrical installations, repairs, and safety inspections.',
     icon: Zap,
     color: 'bg-yellow-100 text-yellow-600',
-    link: '/services?category=electrician'
+    link: '/customer/services'
   }
 ];
 

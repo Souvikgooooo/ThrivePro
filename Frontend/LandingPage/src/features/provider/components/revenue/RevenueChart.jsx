@@ -73,9 +73,9 @@ const RevenueChart = ({ period, chartType = 'line' }) => {
   
   const formatYAxis = (value) => {
     if (value >= 1000) {
-      return `$${(value / 1000).toFixed(1)}k`;
+      return `₹${(value / 1000).toFixed(1)}k`;
     }
-    return `$${value}`;
+    return `₹${value}`;
   };
 
   const renderChart = () => {
@@ -99,28 +99,28 @@ const RevenueChart = ({ period, chartType = 'line' }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <Tooltip 
               formatter={(value, name) => {
-                if (name === 'revenue') return [`$${value}`, 'Revenue'];
+                if (name === 'revenue') return [`₹${value}`, 'Revenue'];
                 return [value, 'Orders'];
               }}
             />
             <Legend />
-            <Area 
-              type="monotone" 
-              dataKey="revenue" 
+            <Area
+              type="monotone"
+              dataKey="revenue"
               yAxisId="left"
-              stroke="#4F46E5" 
-              fillOpacity={1} 
-              fill="url(#colorRevenue)" 
+              stroke="#4F46E5"
+              fillOpacity={1}
+              fill="url(#colorRevenue)"
               name="Revenue"
             />
-            <Area 
-              type="monotone" 
-              dataKey="orders" 
+            <Area
+              type="monotone"
+              dataKey="orders"
               yAxisId="right"
-              stroke="#3B82F6" 
-              fillOpacity={1} 
-              fill="url(#colorOrders)" 
-              name="Orders" 
+              stroke="#3B82F6"
+              fillOpacity={1}
+              fill="url(#colorOrders)"
+              name="Orders"
             />
           </AreaChart>
         );
@@ -131,24 +131,24 @@ const RevenueChart = ({ period, chartType = 'line' }) => {
             <XAxis dataKey="name" />
             <YAxis yAxisId="left" tickFormatter={formatYAxis} />
             <YAxis yAxisId="right" orientation="right" />
-            <Tooltip 
+            <Tooltip
               formatter={(value, name) => {
-                if (name === 'revenue') return [`$${value}`, 'Revenue'];
+                if (name === 'revenue') return [`₹${value}`, 'Revenue'];
                 return [value, 'Orders'];
               }}
             />
             <Legend />
-            <Bar 
-              dataKey="revenue" 
+            <Bar
+              dataKey="revenue"
               yAxisId="left"
-              fill="#4F46E5" 
-              name="Revenue" 
+              fill="#4F46E5"
+              name="Revenue"
             />
-            <Bar 
-              dataKey="orders" 
+            <Bar
+              dataKey="orders"
               yAxisId="right"
-              fill="#3B82F6" 
-              name="Orders" 
+              fill="#3B82F6"
+              name="Orders"
             />
           </BarChart>
         );
@@ -159,26 +159,26 @@ const RevenueChart = ({ period, chartType = 'line' }) => {
             <XAxis dataKey="name" />
             <YAxis yAxisId="left" tickFormatter={formatYAxis} />
             <YAxis yAxisId="right" orientation="right" />
-            <Tooltip 
+            <Tooltip
               formatter={(value, name) => {
-                if (name === 'revenue') return [`$${value}`, 'Revenue'];
+                if (name === 'revenue') return [`₹${value}`, 'Revenue'];
                 return [value, 'Orders'];
               }}
             />
             <Legend />
-            <Line 
-              type="monotone" 
-              dataKey="revenue" 
+            <Line
+              type="monotone"
+              dataKey="revenue"
               yAxisId="left"
-              stroke="#4F46E5" 
-              activeDot={{ r: 8 }} 
+              stroke="#4F46E5"
+              activeDot={{ r: 8 }}
               name="Revenue"
             />
-            <Line 
-              type="monotone" 
-              dataKey="orders" 
-              yAxisId="right" 
-              stroke="#3B82F6" 
+            <Line
+              type="monotone"
+              dataKey="orders"
+              yAxisId="right"
+              stroke="#3B82F6"
               name="Orders"
             />
           </LineChart>

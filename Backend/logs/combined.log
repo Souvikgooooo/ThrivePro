@@ -80,3 +80,19 @@
 {"level":"info","message":"MongoDB connection established","timestamp":"2025-06-06T13:25:34.008Z"}
 {"level":"info","message":"MongoDB connection established","timestamp":"2025-06-06T13:26:01.898Z"}
 {"level":"info","message":"MongoDB connection established","timestamp":"2025-06-06T13:46:40.293Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-06-06T15:32:37.014Z"}
+{"isOperational":true,"level":"error","message":"Failed to create Razorpay order.","stack":"Error: Failed to create Razorpay order.\n    at D:\\06.06.25\\ThrivePro\\Backend\\controllers\\paymentController.js:267:19\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","status":"error","statusCode":400,"timestamp":"2025-06-06T15:50:45.316Z"}
+{"isOperational":true,"level":"error","message":"Failed to create Razorpay order.","stack":"Error: Failed to create Razorpay order.\n    at D:\\06.06.25\\ThrivePro\\Backend\\controllers\\paymentController.js:267:19\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","status":"error","statusCode":400,"timestamp":"2025-06-06T15:50:51.345Z"}
+{"isOperational":true,"level":"error","message":"User already exists with this email","stack":"Error: User already exists with this email\n    at D:\\06.06.25\\ThrivePro\\Backend\\controllers\\authController.js:41:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","status":"error","statusCode":400,"timestamp":"2025-06-06T15:52:27.168Z"}
+{"isOperational":true,"level":"error","message":"User already exists with this email","stack":"Error: User already exists with this email\n    at D:\\06.06.25\\ThrivePro\\Backend\\controllers\\authController.js:41:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","status":"error","statusCode":400,"timestamp":"2025-06-06T15:52:30.403Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-06-09T10:57:08.391Z"}
+{"isOperational":true,"level":"error","message":"User already exists with this email","stack":"Error: User already exists with this email\n    at D:\\06.06.25\\ThrivePro\\Backend\\controllers\\authController.js:41:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","status":"error","statusCode":400,"timestamp":"2025-06-09T11:00:33.850Z"}
+{"level":"warn","message":"MongoDB connection disconnected","timestamp":"2025-06-09T11:09:55.313Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-06-09T11:09:57.640Z"}
+{"level":"warn","message":"MongoDB connection disconnected","timestamp":"2025-06-09T11:13:23.896Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-06-09T11:15:41.868Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-06-09T11:18:55.903Z"}
+{"level":"warn","message":"MongoDB connection disconnected","timestamp":"2025-06-09T11:48:37.612Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-06-09T11:48:37.704Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-06-09T15:54:40.236Z"}
+{"isOperational":true,"level":"error","message":"Incorrect email or password","stack":"Error: Incorrect email or password\n    at D:\\06.06.25\\ThrivePro\\Backend\\controllers\\authController.js:157:17","status":"error","statusCode":401,"timestamp":"2025-06-09T15:55:35.482Z"}

@@ -174,7 +174,7 @@ const OrderDetails = ({ order, onClose }) => {
                     <p className="text-gray-900">{item.name}</p>
                     <p className="text-sm text-gray-500">{item.description}</p>
                   </div>
-                  <p className="font-medium text-gray-900">${(item.price ?? 0).toFixed(2)}</p>
+                  <p className="font-medium text-gray-900">₹{(item.price ?? 0).toFixed(2)}</p>
                 </div>
               ))}
               */}

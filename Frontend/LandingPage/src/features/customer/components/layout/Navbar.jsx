@@ -85,9 +85,6 @@ const Navbar = () => {
                   <Link to={`${customerBasePath}/profile`} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     Your Profile
                   </Link>
-                  <Link to={`${customerBasePath}/settings`} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    Settings
-                  </Link>
                   <div className="border-t border-gray-100"></div>
                   <button 
                     onClick={() => {
@@ -167,13 +164,6 @@ const Navbar = () => {
                 onClick={() => setIsOpen(false)}
               >
                 Your Profile
-              </Link>
-              <Link
-                to={`${customerBasePath}/settings`}
-                className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
-                onClick={() => setIsOpen(false)}
-              >
-                Settings
               </Link>
               <button
                 onClick={() => {
