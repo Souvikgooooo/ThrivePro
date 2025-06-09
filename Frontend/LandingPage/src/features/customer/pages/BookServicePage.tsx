@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react'; // Added useState, useEffect
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useUser } from '@/context/UserContext.tsx';
-import { toast } from 'sonner';
+import { useToast } from '../hooks/use-toast'; // Use custom toast hook
+import { ToastClose } from '../components/ui/toast'; // Import ToastClose
+import TypingEffectText from '../../../components/ui/TypingEffectText'; // Import TypingEffectText
 
 interface Service {
   _id: string; // Changed id to _id
@@ -56,6 +58,7 @@ const BookServicePage: React.FC = () => {
 
   const { user } = useUser(); // Get current user for customerId
   const navigate = useNavigate(); // For redirection
+  const { toast } = useToast(); // Get toast from the hook, moved to top level
 
   // Fetch available providers when service changes
   useEffect(() => {
@@ -70,33 +73,41 @@ const BookServicePage: React.FC = () => {
             },
           });
           if (response.data && response.data.data && Array.isArray(response.data.data.providers)) {
-            // Backend sends { _id, name }, map to what frontend might expect if it used 'id'
-            // However, we changed Provider interface to use _id, so direct assignment is fine.
             setAvailableProviders(response.data.data.providers);
           } else {
             setAvailableProviders([]);
             console.warn("Unexpected response structure for providers or no providers found:", response.data);
           }
-          setProvidersLoading(false); // Ensure loading is set to false after success
+          setProvidersLoading(false);
         } catch (error) {
           console.error('Failed to fetch providers:', error);
           setAvailableProviders([]); 
-          toast.error('Could not load available providers.');
+          toast({
+            title: "Error",
+            description: 'Could not load available providers.',
+            variant: "destructive",
+            action: <ToastClose />,
+            duration: Infinity,
+          });
           setProvidersLoading(false);
         }
       };
-      // Ensure user context is loaded before fetching, or handle user being null
-      if (user?.accessToken) { // Only fetch if user token is available
+      if (user?.accessToken) {
         fetchProviders();
-      } else if (user === null) { // User context loaded, but no user (not logged in)
-        toast.error("Please log in to see available providers.");
+      } else if (user === null) {
+        toast({
+          title: "Authentication Required",
+          description: "Please log in to see available providers.",
+          variant: "destructive",
+          action: <ToastClose />,
+          duration: Infinity,
+        });
         setProvidersLoading(false);
       }
-      // If user is undefined, UserContext is still loading, useEffect will re-run when user changes.
     } else {
-        setProvidersLoading(false); // If no service.name, not loading.
+        setProvidersLoading(false);
     }
-  }, [service, user]); // Added user to dependency array
+  }, [service, user, toast]); // Added toast to dependency array
 
   const handleProviderCardClick = (providerId: string) => {
     setSelectedProviderId(providerId);
@@ -106,7 +117,7 @@ const BookServicePage: React.FC = () => {
       const providerCharges = parseFloat(selectedProvider.charges);
       setTotalCharges(service.price + providerCharges);
     } else {
-      setTotalCharges(service.price); // Reset to base price if no provider or charges
+      setTotalCharges(service.price);
     }
   };
 
@@ -114,56 +125,67 @@ const BookServicePage: React.FC = () => {
     e.preventDefault();
 
     if (!selectedProviderId) {
-      toast.error("Please select a service provider.");
+      toast({
+        title: "Selection Required",
+        description: "Please select a service provider.",
+        variant: "destructive",
+        action: <ToastClose />,
+        duration: Infinity,
+      });
       return;
     }
 
     if (!user || !service) {
-      toast.error("User or service details are missing. Cannot proceed.");
+      toast({
+        title: "Missing Details",
+        description: "User or service details are missing. Cannot proceed.",
+        variant: "destructive",
+        action: <ToastClose />,
+        duration: Infinity,
+      });
       return;
     }
 
-    // Ensure the user object includes an accessToken
     if (!user.accessToken) {
-      toast.error("Authentication token is missing. Please log in again.");
-      // Optionally, you could navigate to login or trigger a logout here
-      // import { useNavigate } from 'react-router-dom'; // at the top
-      // const navigate = useNavigate(); // in the component
-      // navigate('/'); // or navigate('/login');
-      // import { useUser } from '@/context/UserContext.tsx'; // ensure logout is available if used
-      // const { logout } = useUser();
-      // logout();
+      toast({
+        title: "Authentication Missing",
+        description: "Authentication token is missing. Please log in again.",
+        variant: "destructive",
+        action: <ToastClose />,
+        duration: Infinity,
+      });
       return;
     }
 
-    // Ensure user._id is available and use it as customerId
     if (!user._id) {
-      toast.error("Customer ID is missing. Cannot proceed with booking.");
+      toast({
+        title: "Customer ID Missing",
+        description: "Customer ID is missing. Cannot proceed with booking.",
+        variant: "destructive",
+        action: <ToastClose />,
+        duration: Infinity,
+      });
       return;
     }
 
-    // Combine date and time into a single ISO string for the backend
-    const time_slot = `${formData.date}T${formData.time}:00`; // Assuming time is in HH:MM format
+    const time_slot = `${formData.date}T${formData.time}:00`;
 
     const bookingPayload = {
-      customerId: user._id, // Using user._id as customerId
+      customerId: user._id,
       providerId: selectedProviderId,
-      // service_id: service._id, // Backend will look up service by name and providerId
       serviceName: service.name,
-      servicePrice: totalCharges, // Send total charges to backend
+      servicePrice: totalCharges,
       customerName: formData.customerName,
       customerPhoneNumber: formData.phoneNumber,
       customerAddress: formData.address,
       nearestPoint: formData.nearestPoint,
-      time_slot: time_slot, // Combined date and time
-      status: 'pending', // Changed to lowercase to match backend enum
+      time_slot: time_slot,
+      status: 'pending',
     };
 
     console.log('Submitting Booking Details:', bookingPayload);
 
     try {
-      // TODO: Update API endpoint to the new service request endpoint
-      // Example: 'http://localhost:8000/api/service-requests'
       const response = await axios.post('http://localhost:8000/api/service-requests', bookingPayload, {
         headers: {
           Authorization: `Bearer ${user.accessToken}`,
@@ -171,8 +193,18 @@ const BookServicePage: React.FC = () => {
       });
       
       console.log('Service request successful:', response.data);
-      toast.success('Service request sent successfully! You will be notified upon confirmation.');
-      // Navigate to a confirmation page or orders page
+      toast({
+        title: "Service Request Sent!",
+        description: (
+          <TypingEffectText
+            text="Your service request has been sent! Awaiting provider confirmation."
+            onComplete={() => console.log('Booking message typing complete!')}
+          />
+        ),
+        action: <ToastClose />,
+        duration: Infinity,
+        variant: "default",
+      });
       navigate('/customer/orders', { state: { newServiceRequestId: response.data?.serviceRequest?._id || null } });
     } catch (error) {
       console.error('Service request failed:', error);
@@ -180,7 +212,13 @@ const BookServicePage: React.FC = () => {
       if (axios.isAxiosError(error) && error.response?.data?.message) {
         errorMessage = error.response.data.message;
       }
-      toast.error(errorMessage);
+      toast({
+        title: "Booking Failed",
+        description: errorMessage,
+        variant: "destructive",
+        action: <ToastClose />,
+        duration: Infinity,
+      });
     }
   };
 

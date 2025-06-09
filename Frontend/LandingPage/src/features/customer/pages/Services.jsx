@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // Added useRef
 import Layout from '../components/layout/Layout';
 import ServiceCard from '../components/services/ServiceCard';
 import ServiceForm from '../components/services/ServiceForm';
 import ServiceFilters from '../components/services/ServiceFilters';
 import { Plus, Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
+import { useToast } from '../hooks/use-toast'; // Corrected import path for custom toast
+import TypingEffectText from '../../../components/ui/TypingEffectText'; // Corrected import path for TypingEffectText
+import { ToastClose } from '../components/ui/toast'; // Import ToastClose component
 
 // Mock service data
 const initialServices = [
@@ -72,6 +74,8 @@ const initialServices = [
 ];
 
 const Services = () => {
+  const toastShown = useRef(false); // Ref to track if toast has been shown
+
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -86,6 +90,8 @@ const Services = () => {
   const [sortByPrice, setSortByPrice] = useState('');
 
 
+  const { toast } = useToast(); // Get toast and dismiss from the hook
+
   // Load services (ensure it's using mock data)
   useEffect(() => {
     // Ensure we are using the mock initialServices
@@ -94,6 +100,23 @@ const Services = () => {
       setLoading(false);
     };
     loadMockServices(); // Using mock data
+
+    // Display the welcome toast message only once
+    if (!toastShown.current) {
+      toast({
+        title: "Important Information About Service Costs",
+        description: (
+          <TypingEffectText
+            text="If you want to book any service at lowest cost you have to only pay for the service charges (including GST, platform charges, equipment charges etc.) and provider charges (varies upon the rate and skillsets of the provider)."
+            onComplete={() => console.log('Typing complete!')} // No automatic dismissal
+          />
+        ),
+        action: <ToastClose />, // Add the close button
+        duration: Infinity, // Set duration to Infinity for persistence
+        variant: "default",
+      });
+      toastShown.current = true;
+    }
   }, []);
 
   const handleAddService = () => {
@@ -126,7 +149,7 @@ const Services = () => {
   const handleFormSubmit = (serviceData) => {
     if (editingService && editingService._id) { // Use _id
       // Update existing service
-      setServices(services.map(service => 
+      setServices(services.map(service =>
         service._id === serviceData._id ? serviceData : service // Use _id
       ));
       toast.success('Service updated successfully');
@@ -135,7 +158,7 @@ const Services = () => {
       const newService = {
         ...serviceData,
         // For mock data, generate a temporary unique _id if needed for keys, or rely on numerical id if still present
-        _id: `temp-${Date.now()}`, 
+        _id: `temp-${Date.now()}`,
         id: services.length + 1 // Keep numerical id for mock data if other logic depends on it
       };
       setServices([...services, newService]);
@@ -162,25 +185,25 @@ const Services = () => {
       service.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }
-  
+
   if (category) {
     filteredServices = filteredServices.filter(service =>
       service.category === category
     );
   }
-  
+
   if (sortByName === 'name') {
     filteredServices.sort((a, b) => a.name.localeCompare(b.name));
   } else if (sortByName === 'name-desc') {
     filteredServices.sort((a, b) => b.name.localeCompare(a.name));
   }
-  
+
   if (sortByPrice === 'price-asc') {
     filteredServices.sort((a, b) => a.price - b.price);
   } else if (sortByPrice === 'price-desc') {
     filteredServices.sort((a, b) => b.price - a.price);
   }
-  
+
   const sortedServices = [...filteredServices].sort((a, b) => {
     if (sortBy === 'name') {
       return a.name.localeCompare(b.name);

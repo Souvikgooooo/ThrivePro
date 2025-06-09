@@ -32,6 +32,7 @@ import ProviderOrders from './features/provider/pages/Orders.jsx';
 import ProviderProfile from './features/provider/pages/Profile.jsx';
 import ProviderRequests from './features/provider/pages/Requests.jsx';
 import ProviderServices from './features/provider/pages/Services.jsx';
+import { Toaster } from './components/ui/toaster'; // Import the Toaster component
 
 interface LandingPageContentProps {
   onLoginClick: () => void;
@@ -83,15 +84,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, children 
 
 
 function App() {
-  const [isSignUpOpen, setSignUpOpen] = useState(false);
-  const [isLoginOpen, setLoginOpen] = useState(false);
-  const [isForgotPasswordOpen, setForgotPasswordOpen] = useState(false);
+  const [currentModal, setCurrentModal] = useState<string | null>(null);
   const { user, setUser } = useUser(); // Get user and setUser from context
 
-  const openLogin = () => { setSignUpOpen(false); setForgotPasswordOpen(false); setLoginOpen(true); };
-  const openSignUp = () => { setLoginOpen(false); setForgotPasswordOpen(false); setSignUpOpen(true); };
-  const openForgotPassword = () => { setLoginOpen(false); setSignUpOpen(false); setForgotPasswordOpen(true); };
-  const closeAllModals = () => { setLoginOpen(false); setSignUpOpen(false); setForgotPasswordOpen(false); };
+  const openLogin = () => setCurrentModal('login');
+  const openSignUp = () => setCurrentModal('signup');
+  const openForgotPassword = () => setCurrentModal('forgotPassword');
+  const closeAllModals = () => setCurrentModal(null);
 
   // Function to handle actual login logic (to be called from Login component)
   // This is a placeholder - actual API call and user setting will be in Login.tsx
@@ -103,55 +102,58 @@ function App() {
 
 
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          user ? (
-            user.type === 'customer' ? <Navigate to="/customer" replace /> : <Navigate to="/provider" replace />
-          ) : (
-            <>
-              <LandingPageContent onLoginClick={openLogin} onSignUpClick={openSignUp} />
-              {isSignUpOpen && <SignUp onClose={closeAllModals} onLoginClick={openLogin} />}
-              {isLoginOpen && <Login onClose={closeAllModals} onSignUpClick={openSignUp} onForgotPasswordClick={openForgotPassword} onLoginSuccess={handleLoginSuccess} />}
-              {isForgotPasswordOpen && <ForgotPassword onClose={closeAllModals} onLoginClick={openLogin} />}
-            </>
-          )
-        }
-      />
-      <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
-      {/* <Route path="/about-developers" element={<AboutDevelopersPage />} /> {/* This line will be removed */}
+    <>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            user ? (
+              user.type === 'customer' ? <Navigate to="/customer" replace /> : <Navigate to="/provider" replace />
+            ) : (
+              <>
+                <LandingPageContent onLoginClick={openLogin} onSignUpClick={openSignUp} />
+                {currentModal === 'signup' && <SignUp onClose={closeAllModals} onLoginClick={openLogin} />}
+                {currentModal === 'login' && <Login onClose={closeAllModals} onSignUpClick={openSignUp} onForgotPasswordClick={openForgotPassword} onLoginSuccess={handleLoginSuccess} />}
+                {currentModal === 'forgotPassword' && <ForgotPassword onClose={closeAllModals} onLoginClick={openLogin} />}
+              </>
+            )
+          }
+        />
+        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+        {/* <Route path="/about-developers" element={<AboutDevelopersPage />} /> {/* This line will be removed */}
 
-      {/* Customer Routes */}
-      <Route element={<ProtectedRoute allowedRoles={['customer']} />}>
-        <Route path="/customer" element={<CustomerHome />} />
-        <Route path="/customer/services" element={<CustomerServices />} />
-        <Route path="/customer/orders" element={<CustomerOrders />} />
-        <Route path="/customer/profile" element={<CustomerProfile />} />
-        <Route path="/customer/book-service" element={<CustomerBookServicePage />} />
-        <Route path="/customer/feedback" element={<CustomerFeedbackAndReviews />} />
-        <Route path="/customer/about" element={<AboutDevelopersPage />} /> {/* Changed route to /customer/about */}
-        {/* Add other customer-specific routes here */}
-      </Route>
+        {/* Customer Routes */}
+        <Route element={<ProtectedRoute allowedRoles={['customer']} />}>
+          <Route path="/customer" element={<CustomerHome />} />
+          <Route path="/customer/services" element={<CustomerServices />} />
+          <Route path="/customer/orders" element={<CustomerOrders />} />
+          <Route path="/customer/profile" element={<CustomerProfile />} />
+          <Route path="/customer/book-service" element={<CustomerBookServicePage />} />
+          <Route path="/customer/feedback" element={<CustomerFeedbackAndReviews />} />
+          <Route path="/customer/about" element={<AboutDevelopersPage />} /> {/* Changed route to /customer/about */}
+          {/* Add other customer-specific routes here */}
+        </Route>
 
-      {/* Service Provider Routes */}
-      <Route element={<ProtectedRoute allowedRoles={['serviceprovider']} />}>
-        <Route path="/provider" element={<ProviderHome />} />
-        <Route path="/provider/services" element={<ProviderServices />} />
-        <Route path="/provider/orders" element={<ProviderOrders />} />
-        <Route path="/provider/profile" element={<ProviderProfile />} />
-        <Route path="/provider/requests" element={<ProviderRequests />} />
-        <Route path="/provider/about" element={<AboutDevelopersPage />} /> {/* Added route for provider */}
-        {/* Add other provider-specific routes here */}
-      </Route>
-      
-      {/* Fallback for unmatched routes within customer or provider sections if needed, or a global NotFound */}
-      {/* For simplicity, using a global NotFound for now. Specific ones can be added within ProtectedRoute if desired. */}
-      <Route path="/customer/*" element={<CustomerNotFound />} />
-      <Route path="/provider/*" element={<ProviderNotFound />} />
-      {/* Consider a global NotFound page as well if no other route matches */}
-      {/* <Route path="*" element={<GlobalNotFound />} /> */}
-    </Routes>
+        {/* Service Provider Routes */}
+        <Route element={<ProtectedRoute allowedRoles={['serviceprovider']} />}>
+          <Route path="/provider" element={<ProviderHome />} />
+          <Route path="/provider/services" element={<ProviderServices />} />
+          <Route path="/provider/orders" element={<ProviderOrders />} />
+          <Route path="/provider/profile" element={<ProviderProfile />} />
+          <Route path="/provider/requests" element={<ProviderRequests />} />
+          <Route path="/provider/about" element={<AboutDevelopersPage />} /> {/* Added route for provider */}
+          {/* Add other provider-specific routes here */}
+        </Route>
+        
+        {/* Fallback for unmatched routes within customer or provider sections if needed, or a global NotFound */}
+        {/* For simplicity, using a global NotFound for now. Specific ones can be added within ProtectedRoute if desired. */}
+        <Route path="/customer/*" element={<CustomerNotFound />} />
+        <Route path="/provider/*" element={<ProviderNotFound />} />
+        {/* Consider a global NotFound page as well if no other route matches */}
+        {/* <Route path="*" element={<GlobalNotFound />} /> */}
+      </Routes>
+      <Toaster /> {/* Render the Toaster component here */}
+    </>
   );
 }
 

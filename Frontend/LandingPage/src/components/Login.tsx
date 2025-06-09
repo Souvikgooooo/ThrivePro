@@ -4,6 +4,8 @@ import { FaGoogle } from 'react-icons/fa'; // Google icon from react-icons
 import axios from 'axios';
 // import { useNavigate } from 'react-router-dom'; // useNavigate will not be used here directly
 import { useUser } from '../context/UserContext'; // Import user context
+import { useToast } from '../features/customer/hooks/use-toast'; // Import useToast hook
+import { ToastClose } from '../features/customer/components/ui/toast'; // Import ToastClose
 
 interface LoginProps {
   onClose: () => void;
@@ -15,10 +17,21 @@ interface LoginProps {
 const Login: React.FC<LoginProps> = ({ onClose, onSignUpClick, onForgotPasswordClick, onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { toast } = useToast(); // Initialize toast hook
   // const { setUser } = useUser(); // setUser will be called via onLoginSuccess prop
 
   const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
+  console.log('handleSubmit called'); // Add this line for debugging
+
+  if (!email || !password) {
+    toast({
+      title: "Error",
+      description: "Please provide both email and password.",
+      variant: "destructive",
+    });
+    return;
+  }
 
   try {
     const response = await axios.post('http://localhost:8000/api/auth/login', {
@@ -52,15 +65,30 @@ const Login: React.FC<LoginProps> = ({ onClose, onSignUpClick, onForgotPasswordC
     // The redirection is now handled by App.tsx based on user context change
     // console.log('User data type:', userData.type); 
 
+    toast({
+      title: "Success",
+      description: "Login successful!",
+      variant: "default", // Changed from 'success' to 'default'
+      action: <ToastClose />, // Ensure close button is present
+      duration: Infinity, // Ensure persistence
+    });
+
     onClose(); // Close the modal
 
   } catch (error) {
-    console.error('Login Failed:', error);
     let errorMessage = 'Login failed. Please try again.';
     if (axios.isAxiosError(error) && error.response && error.response.data && error.response.data.message) {
       errorMessage = error.response.data.message;
+      console.log('Backend error message:', errorMessage); // Log the specific backend message
+    } else {
+      console.error('Login Failed:', error); // Keep console.error for unexpected errors
+      console.log('Raw error response data:', axios.isAxiosError(error) && error.response ? error.response.data : 'N/A'); // Log raw error data
     }
-    alert(errorMessage);
+    toast({
+      title: "Login Failed",
+      description: errorMessage,
+      variant: "destructive",
+    });
   }
 };
 

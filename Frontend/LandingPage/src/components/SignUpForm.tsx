@@ -4,6 +4,8 @@ import { User, Phone, Mail, Lock, CheckCircle } from 'lucide-react'; // Importin
 import axios from 'axios'; // Import axios
 // import { useNavigate } from 'react-router-dom'; // useNavigate will not be used here for redirection
 import { useUser } from '../context/UserContext'; // Import user context
+import { useToast } from '../features/customer/hooks/use-toast'; // Import useToast hook
+import { ToastClose } from '../features/customer/components/ui/toast'; // Import ToastClose
 
 interface FormData {
   name: string;
@@ -26,6 +28,7 @@ interface SignUpFormProps {
 const SignUpForm: React.FC<SignUpFormProps> = ({ role, onBack, onClose }) => {
   // const navigate = useNavigate(); // Not used for primary redirection after signup
   const { setUser } = useUser(); // Get setUser function from context
+  const { toast } = useToast(); // Initialize toast hook
   
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -46,26 +49,47 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ role, onBack, onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent default form submission
     console.log('handleSubmit called');
-      console.log(formData);
+    console.log(formData);
 
-      try {
-        const response = await axios.post('http://localhost:8000/api/auth/register', {
-          name: formData.name,
-          phone_number: formData.phone_number,
-          email: formData.email,
-          password: formData.password,
-          role: role === 'serviceProvider' ? 'provider' : role, // Send the role to the backend, mapping 'serviceProvider' to 'provider'
-          address: formData.address,
-          // Include service provider specific fields if applicable
-          ...(role === 'serviceProvider' && {
-            service: formData.service,
-            experience: formData.experience,
-            tradeLicense: formData.tradeLicense,
-            charges: formData.charges, // Include charges
-          }),
+    // Client-side validation
+    if (!formData.name || !formData.phone_number || !formData.email || !formData.password || !formData.address) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (role === 'serviceProvider') {
+      if (!formData.service || !formData.experience || !formData.tradeLicense || !formData.charges) {
+        toast({
+          title: "Error",
+          description: "Please fill in all service provider details.",
+          variant: "destructive",
         });
+        return;
+      }
+    }
 
-        console.log('Registration successful:', response.data);
+    try {
+      const response = await axios.post('http://localhost:8000/api/auth/register', {
+        name: formData.name,
+        phone_number: formData.phone_number,
+        email: formData.email,
+        password: formData.password,
+        role: role === 'serviceProvider' ? 'provider' : role, // Send the role to the backend, mapping 'serviceProvider' to 'provider'
+        address: formData.address,
+        // Include service provider specific fields if applicable
+        ...(role === 'serviceProvider' && {
+          service: formData.service,
+          experience: formData.experience,
+          tradeLicense: formData.tradeLicense,
+          charges: formData.charges, // Include charges
+        }),
+      });
+
+      console.log('Registration successful:', response.data);
 
       // Assuming the backend returns user data on successful signup.
       // We'll merge form data for provider-specific fields to ensure they are in the context immediately.
@@ -100,14 +124,27 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ role, onBack, onClose }) => {
       // Redirection is now handled by App.tsx based on user context change
       // No need for window.location.href here
 
+      toast({
+        title: "Success",
+        description: "Registration successful!",
+        variant: "default", // Changed from 'success' to 'default'
+        action: <ToastClose />, // Ensure close button is present
+        duration: Infinity, // Ensure persistence
+      });
+
       onClose(); // Close the modal on successful signup
     } catch (error) {
-      console.error('Registration error:', error);
-      // Handle registration error (show message to user)
-      if (axios.isAxiosError(error) && error.response) {
-        console.error('Error details:', error.response.data);
-        // You might want to display error.response.data.message to the user
+      let errorMessage = 'Registration failed. Please try again.';
+      if (axios.isAxiosError(error) && error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message;
+      } else {
+        console.error('Registration error:', error); // Keep console.error for unexpected errors
       }
+      toast({
+        title: "Registration Failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
     }
   };
 

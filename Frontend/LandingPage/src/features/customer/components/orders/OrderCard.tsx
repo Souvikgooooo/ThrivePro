@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Fragment } from 'react'; // Added Fragment
-import { Calendar, Clock, User, MapPin, DollarSign, ExternalLink, Briefcase, MessageSquare, X as XIcon } from 'lucide-react'; // Added MessageSquare, XIcon
+import { Calendar, Clock, User, MapPin, IndianRupee, ExternalLink, Briefcase, MessageSquare, X as XIcon } from 'lucide-react'; // Added MessageSquare, XIcon
 
 // Re-declared Order interface (ideally import from a central types file)
 interface Order {
@@ -188,9 +188,9 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onViewDetails, onUpdateSta
           )}
 
           <div className="flex items-center">
-            <DollarSign className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
-            <span className="text-gray-700 font-medium">
-              ${(order.servicePriceSnapshot || order.service.price).toFixed(2)}
+            <IndianRupee className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
+            <span className="text-gray-700 font-medium flex items-center">
+              <IndianRupee className="h-4 w-4 text-gray-700 mr-1" />{(order.servicePriceSnapshot || order.service.price).toFixed(2)}
             </span>
           </div>
         </div>
@@ -292,15 +292,15 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onViewDetails, onUpdateSta
               <hr className="my-3"/>
               <div>
                 <p className="text-sm text-gray-500">Service Charge:</p>
-                <p className="text-xl font-bold text-gray-800">
-                  ${(order.servicePriceSnapshot || order.service.price).toFixed(2)}
+                <p className="text-xl font-bold text-gray-800 flex items-center">
+                  <IndianRupee className="h-5 w-5 mr-1" />{(order.servicePriceSnapshot || order.service.price).toFixed(2)}
                 </p>
               </div>
                {/* Add other bill details here if available, e.g., taxes, discounts */}
               <div className="border-t pt-3 mt-3">
                 <p className="text-sm text-gray-500">Total Amount Due:</p>
-                <p className="text-2xl font-bold text-primary">
-                 ${(order.servicePriceSnapshot || order.service.price).toFixed(2)}
+                <p className="text-2xl font-bold text-primary flex items-center">
+                 <IndianRupee className="h-6 w-6 mr-1" />{(order.servicePriceSnapshot || order.service.price).toFixed(2)}
                 </p>
               </div>
             </div>

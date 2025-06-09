@@ -3,7 +3,7 @@ import axios from 'axios'; // Import axios
 import { useUser } from '@/context/UserContext'; // Import useUser for user details and token
 import { 
   X, User, Calendar, Clock, MapPin, Phone, Mail, 
-  CreditCard, File, MessageSquare, DollarSign, Tag 
+  CreditCard, File, MessageSquare, IndianRupee, Tag 
 } from 'lucide-react';
 
 const OrderDetails = ({ order, onClose, onPaymentSuccess }) => { // Added onPaymentSuccess prop

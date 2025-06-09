@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Calendar, Clock, User, MapPin, DollarSign, ExternalLink } from 'lucide-react';
+import { Calendar, Clock, User, MapPin, IndianRupee, ExternalLink } from 'lucide-react';
 
 const OrderCard = ({ order, onViewDetails }) => {
   const [timeLeft, setTimeLeft] = useState('');
@@ -119,7 +119,7 @@ const OrderCard = ({ order, onViewDetails }) => {
         </div>
 
         <div className="flex items-center">
-          <DollarSign className="h-5 w-5 text-gray-400 mr-2" />
+          <IndianRupee className="h-5 w-5 text-gray-400 mr-2" />
           {/* Use servicePriceSnapshot or service.price for amount, with fallback */}
           <span className="text-gray-900 font-semibold">
             ₹{(order.servicePriceSnapshot ?? order.service?.price ?? 0).toFixed(2)}
