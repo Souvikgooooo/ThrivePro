@@ -3,7 +3,7 @@ import axios from 'axios'; // Import axios
 import { useUser } from '@/context/UserContext'; // Import useUser for user details and token
 import { 
   X, User, Calendar, Clock, MapPin, Phone, Mail, 
-  CreditCard, File, MessageSquare, IndianRupee, Tag 
+  CreditCard, File, MessageSquare, IndianRupee, Tag, DollarSign 
 } from 'lucide-react';
 
 const OrderDetails = ({ order, onClose, onPaymentSuccess }) => { // Added onPaymentSuccess prop
@@ -260,17 +260,27 @@ const OrderDetails = ({ order, onClose, onPaymentSuccess }) => { // Added onPaym
                     alert('Please log in to make a payment.');
                     return;
                   }
+                  if (!user || !user.accessToken) {
+                    alert('Please log in to make a payment.');
+                    return;
+                  }
+                  // Ensure Razorpay script is loaded
+                  if (typeof window.Razorpay === 'undefined') {
+                    alert('Razorpay script not loaded. Please try again in a moment.');
+                    console.error('Razorpay script not loaded.');
+                    return;
+                  }
+
                   console.log('Pay Now for completed service, order ID:', order._id);
                   const orderAmount = (order.servicePriceSnapshot ?? order.service?.price ?? 0) * 100; // Amount in paise
 
                   try {
                     // Step 1: Create Razorpay Order by calling backend
                     const orderCreationResponse = await axios.post(
-                      `http://localhost:8000/api/payment/order`,  // Corrected path: /api/payment/order
+                      `http://localhost:8000/api/payment/order`,
                       { 
                         amount: orderAmount, 
                         currency: 'INR',
-                        // receipt: `rcpt_${order._id}` // Optional: send your internal order/bill ID as receipt
                       },
                       { headers: { Authorization: `Bearer ${user.accessToken}` } }
                     );
@@ -283,7 +293,7 @@ const OrderDetails = ({ order, onClose, onPaymentSuccess }) => { // Added onPaym
 
                     // Step 2: Open Razorpay Checkout
                     const options = {
-                      key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_V3eLJGsq0GMluZ", // Use Vite's way to access env vars
+                      key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_V3eLJGsq0GMluZ",
                       amount: razorpayOrder.amount, 
                       currency: razorpayOrder.currency,
                       name: 'ThrivePro Payment',
@@ -293,7 +303,7 @@ const OrderDetails = ({ order, onClose, onPaymentSuccess }) => { // Added onPaym
                         // Step 3: Verify Payment with backend
                         try {
                           const verificationResponse = await axios.post(
-                            `http://localhost:8000/api/payment/payment/${order._id}`, // Corrected path: /api/payment/payment/:id
+                            `http://localhost:8000/api/payment/payment/${order._id}`,
                             {
                               razorpay_order_id: response.razorpay_order_id,
                               razorpay_payment_id: response.razorpay_payment_id,
@@ -304,10 +314,9 @@ const OrderDetails = ({ order, onClose, onPaymentSuccess }) => { // Added onPaym
 
                           if (verificationResponse.data.status === 'success') {
                             alert('Payment successful! ' + verificationResponse.data.message);
-                            if (onPaymentSuccess) onPaymentSuccess(order._id); // Callback to refresh orders
-                            onClose(); // Close the modal
+                            if (onPaymentSuccess) onPaymentSuccess(order._id);
+                            onClose();
                           } else {
-                            // Even if verification status is not 'success' but backend gives a specific message
                             alert(verificationResponse.data.message || 'Payment verification returned an issue.');
                           }
                         } catch (verifyError) {
@@ -315,12 +324,11 @@ const OrderDetails = ({ order, onClose, onPaymentSuccess }) => { // Added onPaym
                           let errMsg = 'Payment verification failed.';
                           if (axios.isAxiosError(verifyError) && verifyError.response?.data?.message) {
                             errMsg = verifyError.response.data.message;
-                            // Handle specific "Bill already paid" error from backend
                             if (errMsg.includes('Bill already paid')) {
                               alert('This bill has already been paid. Refreshing order status.');
-                              if (onPaymentSuccess) onPaymentSuccess(order._id); // Refresh orders to show correct status
-                              onClose(); // Close the modal
-                              return; // Exit to prevent further generic error alert
+                              if (onPaymentSuccess) onPaymentSuccess(order._id);
+                              onClose();
+                              return;
                             }
                           }
                           alert(errMsg);

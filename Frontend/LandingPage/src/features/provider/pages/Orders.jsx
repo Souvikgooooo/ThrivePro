@@ -22,13 +22,6 @@ const Orders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       if (!user?.accessToken) {
-        toast({
-          title: "Authentication Error",
-          description: "Authentication required to view orders.",
-          variant: "destructive",
-          action: <ToastClose />,
-          duration: Infinity,
-        });
         setOrders([]);
         setLoading(false);
         return;
@@ -49,18 +42,7 @@ const Orders = () => {
             if (oldStatus && oldStatus !== newOrder.status) {
               // Status has changed
               if (newOrder.status === 'PaymentCompleted') {
-                toast({
-                  title: "Payment Received!",
-                  description: (
-                    <TypingEffectText
-                      text="Payment received for a completed service! Great job!"
-                      onComplete={() => console.log('Payment received message typing complete!')}
-                    />
-                  ),
-                  action: <ToastClose />,
-                  duration: Infinity,
-                  variant: "default", // Changed from 'success' to 'default'
-                });
+                // Removed toast for Payment Received
               }
               // Add other status change toasts here if needed for provider side
             }
@@ -73,20 +55,13 @@ const Orders = () => {
         }
       } catch (error) {
         console.error('Failed to fetch provider orders:', error);
-        toast({
-          title: "Error",
-          description: error.response?.data?.message || 'Could not load orders.',
-          variant: "destructive",
-          action: <ToastClose />,
-          duration: Infinity,
-        });
         setOrders([]);
       } finally {
         setLoading(false);
       }
     };
     fetchOrders();
-  }, [user, toast, orders]); // Added toast and orders to dependency array
+  }, [user, toast]); // Removed orders from dependency array to prevent infinite loop
 
   const handleViewDetails = (order) => {
     setSelectedOrder(order);
@@ -99,13 +74,6 @@ const Orders = () => {
   // Optionally, allow provider to update order status (e.g., mark as completed)
   const handleUpdateStatus = async (orderId, newStatus) => {
     if (!user?.accessToken) {
-      toast({
-        title: "Authentication Required",
-        description: "Authentication required.",
-        variant: "destructive",
-        action: <ToastClose />,
-        duration: Infinity,
-      });
       return;
     }
     try {
@@ -132,28 +100,11 @@ const Orders = () => {
           toastVariant = 'default';
       }
 
-      toast({
-        title: "Order Status Updated!",
-        description: (
-          <TypingEffectText
-            text={toastMessage}
-            onComplete={() => console.log('Status update message typing complete!')}
-          />
-        ),
-        action: <ToastClose />,
-        duration: Infinity,
-        variant: toastVariant,
-      });
+      // Removed toast for Order Status Updated!
 
     } catch (error) {
       console.error('Failed to update order status:', error);
-      toast({
-        title: "Error Updating Status",
-        description: error.response?.data?.message || 'Failed to update order status.',
-        variant: "destructive",
-        action: <ToastClose />,
-        duration: Infinity,
-      });
+      // Removed toast for Error Updating Status
     }
   };
 

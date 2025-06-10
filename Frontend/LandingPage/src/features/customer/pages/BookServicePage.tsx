@@ -82,26 +82,12 @@ const BookServicePage: React.FC = () => {
         } catch (error) {
           console.error('Failed to fetch providers:', error);
           setAvailableProviders([]); 
-          toast({
-            title: "Error",
-            description: 'Could not load available providers.',
-            variant: "destructive",
-            action: <ToastClose />,
-            duration: Infinity,
-          });
           setProvidersLoading(false);
         }
       };
       if (user?.accessToken) {
         fetchProviders();
       } else if (user === null) {
-        toast({
-          title: "Authentication Required",
-          description: "Please log in to see available providers.",
-          variant: "destructive",
-          action: <ToastClose />,
-          duration: Infinity,
-        });
         setProvidersLoading(false);
       }
     } else {
@@ -125,46 +111,18 @@ const BookServicePage: React.FC = () => {
     e.preventDefault();
 
     if (!selectedProviderId) {
-      toast({
-        title: "Selection Required",
-        description: "Please select a service provider.",
-        variant: "destructive",
-        action: <ToastClose />,
-        duration: Infinity,
-      });
       return;
     }
 
     if (!user || !service) {
-      toast({
-        title: "Missing Details",
-        description: "User or service details are missing. Cannot proceed.",
-        variant: "destructive",
-        action: <ToastClose />,
-        duration: Infinity,
-      });
       return;
     }
 
     if (!user.accessToken) {
-      toast({
-        title: "Authentication Missing",
-        description: "Authentication token is missing. Please log in again.",
-        variant: "destructive",
-        action: <ToastClose />,
-        duration: Infinity,
-      });
       return;
     }
 
     if (!user._id) {
-      toast({
-        title: "Customer ID Missing",
-        description: "Customer ID is missing. Cannot proceed with booking.",
-        variant: "destructive",
-        action: <ToastClose />,
-        duration: Infinity,
-      });
       return;
     }
 
@@ -193,18 +151,6 @@ const BookServicePage: React.FC = () => {
       });
       
       console.log('Service request successful:', response.data);
-      toast({
-        title: "Service Request Sent!",
-        description: (
-          <TypingEffectText
-            text="Your service request has been sent! Awaiting provider confirmation."
-            onComplete={() => console.log('Booking message typing complete!')}
-          />
-        ),
-        action: <ToastClose />,
-        duration: Infinity,
-        variant: "default",
-      });
       navigate('/customer/orders', { state: { newServiceRequestId: response.data?.serviceRequest?._id || null } });
     } catch (error) {
       console.error('Service request failed:', error);
@@ -212,13 +158,6 @@ const BookServicePage: React.FC = () => {
       if (axios.isAxiosError(error) && error.response?.data?.message) {
         errorMessage = error.response.data.message;
       }
-      toast({
-        title: "Booking Failed",
-        description: errorMessage,
-        variant: "destructive",
-        action: <ToastClose />,
-        duration: Infinity,
-      });
     }
   };
 

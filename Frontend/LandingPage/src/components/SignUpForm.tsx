@@ -38,6 +38,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ role, onBack, onClose }) => {
     service: '',
     experience: '',
     tradeLicense: '',
+    charges: '', // Initialize charges to an empty string
     address: ''
   });
 

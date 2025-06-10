@@ -20,13 +20,6 @@ const Requests = () => {
   useEffect(() => {
     const fetchRequests = async () => {
       if (!user?.accessToken) {
-        toast({
-          title: "Authentication Error",
-          description: "Authentication required to view requests.",
-          variant: "destructive",
-          action: <ToastClose />,
-          duration: Infinity,
-        });
         setLoading(false);
         setRequests([]);
         return;
@@ -45,18 +38,7 @@ const Requests = () => {
           const newlyAddedRequests = newRequests.filter(req => req.status === 'pending' && !previousRequestIds.has(req._id));
 
           if (newlyAddedRequests.length > 0) {
-            toast({
-              title: "New Service Request!",
-              description: (
-                <TypingEffectText
-                  text="You have new service requests! Review and respond to provide your excellent service."
-                  onComplete={() => console.log('New request message typing complete!')}
-                />
-              ),
-              action: <ToastClose />,
-              duration: Infinity,
-              variant: "default",
-            });
+            // Removed toast for new service request
           }
           setRequests(newRequests);
         } else {
@@ -65,13 +47,6 @@ const Requests = () => {
         }
       } catch (error) {
         console.error('Failed to fetch provider requests:', error);
-        toast({
-          title: "Error",
-          description: error.response?.data?.message || 'Could not load requests.',
-          variant: "destructive",
-          action: <ToastClose />,
-          duration: Infinity,
-        });
         setRequests([]);
       } finally {
         setLoading(false);
@@ -79,17 +54,10 @@ const Requests = () => {
     };
 
     fetchRequests();
-  }, [user, toast, requests]); // Added toast and requests to dependency array
+  }, [user, toast]); // Removed requests from dependency array to prevent infinite loop
 
   const handleAccept = async (requestId) => {
     if (!user?.accessToken) {
-      toast({
-        title: "Authentication Required",
-        description: "Authentication required.",
-        variant: "destructive",
-        action: <ToastClose />,
-        duration: Infinity,
-      });
       return;
     }
     try {
@@ -102,51 +70,21 @@ const Requests = () => {
         }
       );
       if (response.data.status === 'success') {
-        toast({
-          title: "Request Accepted!",
-          description: (
-            <TypingEffectText
-              text="You have accepted the service request. Please ensure to complete the service on time."
-              onComplete={() => console.log('Request accepted message typing complete!')}
-            />
-          ),
-          action: <ToastClose />,
-          duration: Infinity,
-          variant: "success",
-        });
+        // Removed toast for request accepted
         setRequests(prevRequests => prevRequests.map(req => 
           req._id === requestId ? { ...req, status: 'accepted' } : req
         ).filter(req => req.status === 'pending'));
       } else {
-        toast({
-          title: "Failed to Accept",
-          description: response.data.message || 'Failed to accept request.',
-          variant: "destructive",
-          action: <ToastClose />,
-          duration: Infinity,
-        });
+        // Removed toast for failed to accept
       }
     } catch (error) {
       console.error('Failed to accept request:', error);
-      toast({
-        title: "Error Accepting Request",
-        description: error.response?.data?.message || 'Error accepting request.',
-        variant: "destructive",
-        action: <ToastClose />,
-        duration: Infinity,
-      });
+      // Removed toast for error accepting request
     }
   };
 
   const handleReject = async (requestId) => {
     if (!user?.accessToken) {
-      toast({
-        title: "Authentication Required",
-        description: "Authentication required.",
-        variant: "destructive",
-        action: <ToastClose />,
-        duration: Infinity,
-      });
       return;
     }
     if (window.confirm('Are you sure you want to reject this request?')) {
@@ -160,37 +98,14 @@ const Requests = () => {
           }
         );
         if (response.data.status === 'success') {
-          toast({
-            title: "Request Rejected!",
-            description: (
-              <TypingEffectText
-                text="You have declined the service request. The customer has been notified."
-                onComplete={() => console.log('Request rejected message typing complete!')}
-              />
-            ),
-            action: <ToastClose />,
-            duration: Infinity,
-            variant: "default", // Or 'destructive' if it's a negative outcome for the provider
-          });
+          // Removed toast for request rejected
           setRequests(prevRequests => prevRequests.filter(request => request._id !== requestId));
         } else {
-          toast({
-            title: "Failed to Reject",
-            description: response.data.message || 'Failed to reject request.',
-            variant: "destructive",
-            action: <ToastClose />,
-            duration: Infinity,
-          });
+          // Removed toast for failed to reject
         }
       } catch (error) {
         console.error('Failed to reject request:', error);
-        toast({
-          title: "Error Rejecting Request",
-          description: error.response?.data?.message || 'Error rejecting request.',
-          variant: "destructive",
-          action: <ToastClose />,
-          duration: Infinity,
-        });
+        // Removed toast for error rejecting request
       }
     }
   };

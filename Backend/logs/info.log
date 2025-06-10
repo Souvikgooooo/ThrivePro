@@ -124,3 +124,5 @@
 {"isOperational":true,"level":"error","message":"Incorrect email or password","stack":"Error: Incorrect email or password\n    at D:\\06.06.25\\ThrivePro\\Backend\\controllers\\authController.js:157:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","status":"error","statusCode":401,"timestamp":"2025-06-09T18:26:52.698Z"}
 {"level":"info","message":"MongoDB connection established","timestamp":"2025-06-09T19:16:07.935Z"}
 {"level":"info","message":"MongoDB connection established","timestamp":"2025-06-09T19:36:23.689Z"}
+{"level":"info","message":"MongoDB connection established","timestamp":"2025-06-10T06:58:10.788Z"}
+{"level":"warn","message":"MongoDB connection disconnected","timestamp":"2025-06-10T07:12:09.870Z"}
