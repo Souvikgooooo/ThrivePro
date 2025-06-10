@@ -1,11 +1,15 @@
 
 import React, { useState } from 'react';
 
-const OrderTabs = ({ activeTab, setActiveTab }) => {
-  const tabs = [
+const OrderTabs = ({ activeTab, setActiveTab, showPaymentStatusTab = false }) => {
+  const baseTabs = [
     { id: 'new', label: 'Recently Booked Orders' },
     { id: 'history', label: 'Order Payment History' }
   ];
+
+  const tabs = showPaymentStatusTab
+    ? [...baseTabs, { id: 'payment-status', label: 'Payment Status' }]
+    : baseTabs;
 
   return (
     <div className="border-b border-gray-200">

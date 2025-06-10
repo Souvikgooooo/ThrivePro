@@ -1,10 +1,11 @@
 
 import React, { useState } from 'react';
 
-const OrderTabs = ({ activeTab, setActiveTab }) => {
+const OrderTabs = ({ activeTab, setActiveTab, showPaymentStatusTab }) => {
   const tabs = [
     { id: 'new', label: 'New Orders' },
-    { id: 'history', label: 'Order History' }
+    { id: 'history', label: 'Order History' },
+    ...(showPaymentStatusTab ? [{ id: 'payment-status', label: 'Payment Received' }] : [])
   ];
 
   return (

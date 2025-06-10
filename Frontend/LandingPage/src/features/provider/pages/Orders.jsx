@@ -9,6 +9,7 @@ import { ToastClose } from '../components/ui/toast'; // Import ToastClose
 import TypingEffectText from '../../../components/ui/TypingEffectText'; // Import TypingEffectText
 import axios from 'axios';
 import { useUser } from '@/context/UserContext.tsx';
+import { ExternalLink } from 'lucide-react';
 
 const Orders = () => {
   const [activeTab, setActiveTab] = useState('new');
@@ -113,17 +114,21 @@ const Orders = () => {
     if (activeTab === 'new') {
       // Show 'accepted' (ready to be started) and 'in-progress' orders as new/active
       return order.status === 'accepted' || order.status === 'in-progress';
-    } else {
+    } else if (activeTab === 'history') {
       // Show 'completed' and 'cancelled' (or 'rejected') as history
       return order.status === 'completed' || order.status === 'cancelled' || order.status === 'rejected';
+    } else if (activeTab === 'payment-status') {
+      // Show orders with 'PaymentCompleted' status
+      return order.status === 'PaymentCompleted';
     }
+    return false;
   });
 
   return (
     <Layout>
       <div className="page-container">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">Orders</h1>
-        <OrderTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+        <OrderTabs activeTab={activeTab} setActiveTab={setActiveTab} showPaymentStatusTab={true} />
         {loading ? (
           <div className="py-20 flex justify-center">
             <div className="flex items-center">
@@ -131,39 +136,69 @@ const Orders = () => {
               <span className="text-lg text-gray-600">Loading orders...</span>
             </div>
           </div>
-        ) : (
-          <>
-            {filteredOrders.length === 0 ? (
-              <div className="py-20 text-center">
-                <p className="text-xl text-gray-500">
-                  {activeTab === 'new' 
-                    ? 'No new orders at the moment' 
-                    : 'No order history available'}
-                </p>
-              </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-                {filteredOrders.map(order => (
-                  <OrderCard
-                    key={order._id}
-                    order={order}
-                    onViewDetails={handleViewDetails}
-                    onUpdateStatus={handleUpdateStatus}
-                  />
-                ))}
-              </div>
+              <>
+                {filteredOrders.length === 0 ? (
+                  <div className="py-20 text-center">
+                    <p className="text-xl text-gray-500">
+                      {activeTab === 'new' 
+                        ? 'No new orders at the moment' 
+                        : activeTab === 'history'
+                          ? 'No order history available'
+                          : 'No completed payments to display' // Message for payment-status tab when no orders
+                      }
+                    </p>
+                  </div>
+                ) : (
+                  activeTab === 'payment-status' ? (
+                    <div className="mt-6">
+                      <h2 className="text-xl font-semibold text-gray-800 mb-4">Payment Status</h2>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {filteredOrders.map(order => (
+                          <div key={order._id} className="bg-white rounded-lg shadow p-6 border border-gray-200">
+                            <h3 className="text-lg font-medium text-gray-900">Order #{order._id}</h3>
+                            <p className="text-gray-600 mt-2">Service: {order.serviceNameSnapshot || order.service?.name || 'N/A'}</p>
+                            <p className="text-gray-600">Customer: {order.customer?.name ?? 'N/A'}</p>
+                            <div className="mt-4">
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                Payment Completed
+                              </span>
+                            </div>
+                            <button
+                              onClick={() => handleViewDetails(order)}
+                              className="mt-4 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                            >
+                              View Details
+                              <ExternalLink className="ml-1 h-4 w-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+                      {filteredOrders.map(order => (
+                        <OrderCard
+                          key={order._id}
+                          order={order}
+                          onViewDetails={handleViewDetails}
+                          onUpdateStatus={handleUpdateStatus}
+                        />
+                      ))}
+                    </div>
+                  )
+                )}
+              </>
             )}
-          </>
-        )}
-        {selectedOrder && (
-          <OrderDetails
-            order={selectedOrder}
-            onClose={handleCloseDetails}
-          />
-        )}
-      </div>
-    </Layout>
-  );
-};
+          {selectedOrder && (
+            <OrderDetails
+              order={selectedOrder}
+              onClose={handleCloseDetails}
+            />
+          )}
+        </div>
+      </Layout>
+    );
+  };
 
 export default Orders;
