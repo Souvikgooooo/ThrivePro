@@ -51,4 +51,7 @@ router.post(
   providerController.addProviderBankDetails
 ); 
 
+// Route for recommending a provider
+router.post('/recommend-provider', express.json(), providerController.recommendProvider); // Added express.json() explicitly
+
 module.exports = router;

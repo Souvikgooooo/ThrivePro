@@ -238,7 +238,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ role, onBack, onClose }) => {
               <div className="flex items-center border border-gray-300 rounded-lg px-4 py-3 focus-within:ring-2 focus-within:ring-emerald-600 transition-all">
                 <CheckCircle className="w-6 h-6 text-gray-600" />
                 <input
-                  type="text"
+                  type=" text"
                   name="experience"
                   placeholder="Experience (Years)"
                   value={formData.experience}

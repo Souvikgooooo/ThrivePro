@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { Edit, Trash2 } from 'lucide-react';
+import { UserPlus } from 'lucide-react'; // Added UserPlus icon
 
-const ServiceCard = ({ service, onEdit, onDelete }) => {
+const ServiceCard = ({ service, onRecommend }) => { // Added onRecommend prop
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 hover:border-blue-400 transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-xl">
       <div className="flex justify-between items-start">
@@ -45,20 +45,12 @@ const ServiceCard = ({ service, onEdit, onDelete }) => {
             <span className="text-red-600">Not Available</span>
           )}
         </div>
-        <div className="flex space-x-3">
-          <button
-            onClick={() => onEdit(service)}
-            className="bg-blue-400 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-500 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:scale-105 flex items-center"
-          >
-            <Edit size={16} className="mr-1" /> Edit
-          </button>
-          <button
-            onClick={() => onDelete(service.id)}
-            className="bg-red-400 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-red-500 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:scale-105 flex items-center"
-          >
-            <Trash2 size={16} className="mr-1" /> Delete
-          </button>
-        </div>
+        <button
+          onClick={() => onRecommend(service)}
+          className="bg-purple-400 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-purple-500 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:scale-105 flex items-center"
+        >
+          <UserPlus size={16} className="mr-1" /> Recommend Someone
+        </button>
       </div>
     </div>
   );

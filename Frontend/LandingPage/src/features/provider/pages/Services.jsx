@@ -3,8 +3,10 @@ import Layout from '../components/layout/Layout';
 import ServiceCard from '../components/services/ServiceCard';
 import ServiceForm from '../components/services/ServiceForm';
 import ServiceFilters from '../components/services/ServiceFilters';
+import RecommendProviderForm from '../components/services/RecommendProviderForm'; // New import
 import { Plus, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useUser } from '../../../context/UserContext'; // Corrected import path
 
 // Mock service data
 const initialServices = [
@@ -14,7 +16,7 @@ const initialServices = [
     description: 'Professional haircut and styling service tailored to your preferences.',
     price: 30.00,
     duration: '45 mins',
-    category: 'Beauty & Wellness',
+    category: 'Hairstyling', // Changed from Beauty & Wellness
     image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRO5PomSrHN8seQMf5xmDn0uWpbESNBRqIZlg&s',
     availability: true
   },
@@ -61,7 +63,6 @@ const initialServices = [
   {
     id: 6,
     name: 'Home Cleaning',
-
     description: 'Comprehensive home cleaning service.',
     price: 200.00,
     duration: '2 hours',
@@ -72,11 +73,13 @@ const initialServices = [
 ];
 
 const Services = () => {
+  const { user } = useUser(); // Get user from context
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  //const [addingService, setAddingService] = useState(true);
   const [editingService, setEditingService] = useState(null);
+  const [showRecommendForm, setShowRecommendForm] = useState(false); // New state
+  const [serviceToRecommend, setServiceToRecommend] = useState(null); // New state
   const [searchQuery, setSearchQuery] = useState('');
   const [category, setCategory] = useState('');
   const [sortBy, setSortBy] = useState('name');
@@ -93,7 +96,7 @@ const Services = () => {
     loadServices();
   }, []);
 
-  const handleAddService = () => {
+  const handleAddService = () => { // Re-added
     setEditingService({
       id: null,
       name: '',
@@ -107,20 +110,9 @@ const Services = () => {
     setShowForm(true);
   };
 
-  const handleEditService = (service) => {
-    setEditingService(service);
-    setShowForm(true);
-  };
+  // Removed handleEditService and handleDeleteService
 
-  const handleDeleteService = (id) => {
-    // Confirm before deleting
-    if (window.confirm('Are you sure you want to delete this service?')) {
-      setServices(services.filter(service => service.id !== id));
-      toast.success('Service deleted successfully');
-    }
-  };
-
-  const handleFormSubmit = (serviceData) => {
+  const handleFormSubmit = (serviceData) => { // Re-added
     if (editingService && editingService.id) {
       // Update existing service
       setServices(services.map(service => 
@@ -141,6 +133,50 @@ const Services = () => {
 
   const handleFormCancel = () => {
     setShowForm(false);
+  };
+
+  const handleRecommendClick = (service) => { // New function
+    setServiceToRecommend(service);
+    setShowRecommendForm(true);
+  };
+
+  const handleRecommendSubmit = async (recommendationData) => {
+    console.log('Sending recommendation data:', {
+      ...recommendationData,
+      recommenderName: user.name
+    }); // Added console.log for debugging
+    try {
+      const response = await fetch('/api/provider/recommend-provider', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.accessToken}`
+        },
+        body: JSON.stringify({
+          ...recommendationData,
+          recommenderName: user.name
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success(data.message || 'Recommendation email sent successfully!');
+      } else {
+        toast.error(data.message || 'Failed to send recommendation email.');
+      }
+    } catch (error) {
+      console.error('Error sending recommendation:', error);
+      toast.error('An error occurred while sending the recommendation.');
+    } finally {
+      setShowRecommendForm(false);
+      setServiceToRecommend(null);
+    }
+  };
+
+  const handleRecommendCancel = () => { // New function
+    setShowRecommendForm(false);
+    setServiceToRecommend(null);
   };
 
   // Filter and sort services
@@ -168,7 +204,7 @@ const Services = () => {
     <Layout>
       <div className="page-container">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Manage Services</h1>
+          <h1 className="text-2xl font-bold text-gray-900">View All Services</h1>
           <button
             onClick={handleAddService}
             className="btn-primary flex items-center"
@@ -220,14 +256,21 @@ const Services = () => {
                     <ServiceCard
                       key={service.id}
                       service={service}
-                      onEdit={handleEditService}
-                      onDelete={handleDeleteService}
+                      onRecommend={handleRecommendClick} // Pass the new prop
                     />
                   ))}
                 </div>
               )}
             </>
           )
+        )}
+
+        {showRecommendForm && serviceToRecommend && ( // Conditionally render the form
+          <RecommendProviderForm
+            service={serviceToRecommend}
+            onSubmit={handleRecommendSubmit}
+            onCancel={handleRecommendCancel}
+          />
         )}
       </div>
     </Layout>

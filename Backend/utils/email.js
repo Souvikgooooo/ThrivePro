@@ -19,11 +19,11 @@ const sendEmail = async options => {
     // IMPORTANT: Replace 'YOUR_VERIFIED_SENDER_EMAIL@example.com' with the email address
     // you verified via SendGrid's Single Sender Verification.
     // The name part ("ThrivePro Support") can be whatever you like.
-    from: 'ThrivePro Support<alup7192@gmail.com>',
+    from: `ThrivePro Support <${process.env.EMAIL_FROM}>`,
     to: options.email, // Recipient address
     subject: options.subject, // Subject line
-    text: options.message, // Plain text body
-    // html: // You can also provide an HTML version
+    html: options.html, // HTML body
+    text: options.text, // Plain text body (optional, but good for fallback)
   };
 
   // 3) Actually send the email

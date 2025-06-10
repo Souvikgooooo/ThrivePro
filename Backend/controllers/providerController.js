@@ -7,6 +7,7 @@ const Bill = require('../models/Bill');
 const ProviderBankDetail = require('../models/ProviderBankDetails');
 const Razorpay = require('razorpay');
 const Payment = require('../models/Payment');
+const sendEmail = require('../utils/email'); // Import sendEmail
 
 
 // Allowed categories for services
@@ -79,6 +80,59 @@ exports.createService = catchAsync(async (req, res, next) => {
     message: 'Service created successfully',
     service_id: newService._id
   });
+});
+
+exports.recommendProvider = catchAsync(async (req, res, next) => {
+  console.log('Backend received body:', req.body); // Added console.log for debugging
+  const { providerName, providerEmail, yearsOfExperience, serviceName } = req.body; // Corrected destructuring
+  const recommenderName = req.user.name; // Assuming req.user.name holds the current provider's name
+
+  if (!providerName || !providerEmail || !yearsOfExperience || !serviceName) { // Corrected validation
+    return next(new AppError('Please provide all required recommendation details.', 400));
+  }
+
+  const signupLink = `http://localhost:5173`; // Hardcoded frontend signup link
+
+  const emailSubject = `You've been recommended to join ThrivePro!`;
+  const emailHtml = `
+    <p>Hello ${providerName},</p>
+    <p>You have been recommended by <strong>${recommenderName}</strong> to join our platform, ThrivePro, as a service provider.</p>
+    <p>They recommended you for your expertise in <strong>${serviceName}</strong> and your <strong>${yearsOfExperience} years of experience</strong> in the field.</p>
+    <p>We invite you to join our growing community of professionals and start offering your services.</p>
+    <p>Click the link below to sign up and create your provider profile:</p>
+    <p><a href="${signupLink}">Join ThrivePro as a Provider</a></p>
+    <p>We look forward to having you!</p>
+    <p>Best regards,</p>
+    <p>The ThrivePro Team</p>
+  `;
+  const emailText = `
+    Hello ${providerName},
+    You have been recommended by ${recommenderName} to join our platform, ThrivePro, as a service provider.
+    They recommended you for your expertise in ${serviceName} and your ${yearsOfExperience} years of experience in the field.
+    We invite you to join our growing community of professionals and start offering your services.
+    Click the link below to sign up and create your provider profile:
+    ${signupLink}
+    We look forward to having you!
+    Best regards,
+    The ThrivePro Team
+  `;
+
+  try {
+    await sendEmail({
+      email: providerEmail, // Corrected variable name
+      subject: emailSubject,
+      html: emailHtml,
+      text: emailText
+    });
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Recommendation email sent successfully!'
+    });
+  } catch (error) {
+    console.error('Error sending recommendation email:', error);
+    return next(new AppError('Failed to send recommendation email. Please try again later.', 500));
+  }
 });
 
 exports.getProvidersByService = catchAsync(async (req, res, next) => {

@@ -15,25 +15,25 @@ function LandingPage() {
   const [isLoginOpen, setLoginOpen] = useState(false);
 
   const services = [
-    { title: 'House Keeping', description: 'Professional cleaning...', icon: <Home className="w-8 h-8" />, color: 'from-blue-500 to-blue-600' },
-    { title: 'Electrical Services', description: 'Expert electrical...', icon: <Lightbulb className="w-8 h-8" />, color: 'from-yellow-500 to-yellow-600' },
-    { title: 'Beauty & Wellness', description: 'Premium beauty...', icon: <Scissors className="w-8 h-8" />, color: 'from-pink-500 to-pink-600' },
-    { title: 'Private Tuition', description: 'Personalized education...', icon: <GraduationCap className="w-8 h-8" />, color: 'from-green-500 to-green-600' },
-    { title: 'Plumbing Services', description: 'Professional plumbing...', icon: <Wrench className="w-8 h-8" />, color: 'from-purple-500 to-purple-600' },
-    { title: 'Car Rental', description: 'Wide range of vehicles...', icon: <Car className="w-8 h-8" />, color: 'from-orange-500 to-orange-600' }
+    { title: 'Bridal Makeup', description: 'Unveil your most radiant self with the best bridal makeup artistry — where elegance meets perfection.', icon: <Scissors className="w-8 h-8" />, color: 'from-pink-500 to-pink-600' },
+    { title: 'Facial Treatment', description: 'Deep cleansing facial to rejuvenate your skin.', icon: <Scissors className="w-8 h-8" />, color: 'from-pink-500 to-pink-600' },
+    { title: 'Haircut & Styling', description: 'Professional haircut and styling service tailored to your preferences.', icon: <Scissors className="w-8 h-8" />, color: 'from-pink-500 to-pink-600' },
+    { title: 'Home Cleaning', description: 'Comprehensive home cleaning service.', icon: <Home className="w-8 h-8" />, color: 'from-blue-500 to-blue-600' },
+    { title: 'Manicure & Pedicure', description: 'Luxury nail care treatment for hands and feet.', icon: <Scissors className="w-8 h-8" />, color: 'from-pink-500 to-pink-600' },
+    { title: 'Math Tutoring', description: 'One-on-one math tutoring for students of all levels.', icon: <GraduationCap className="w-8 h-8" />, color: 'from-green-500 to-green-600' }
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-sky-50">
       <Navbar onLoginClick={() => setLoginOpen(true)} onSignUpClick={() => setSignUpOpen(true)} />
-      <div id="home"><Hero /></div>
+      <div id="home"><Hero onLoginClick={() => setLoginOpen(true)} /></div>
       <div id="about"><About /></div>
       <div id="services"><Services services={services} /></div>
       <Blog />
-      <Contact />
+      <div id="contact"><Contact /></div>
 
-      {isSignUpOpen && <SignUp />}
-      {isLoginOpen && <Login />}
+      {isSignUpOpen && <SignUp onClose={() => setSignUpOpen(false)} onLoginClick={() => { setSignUpOpen(false); setLoginOpen(true); }} />}
+      {isLoginOpen && <Login onClose={() => setLoginOpen(false)} onSignUpClick={() => { setLoginOpen(false); setSignUpOpen(true); }} onForgotPasswordClick={() => { /* TODO: Implement forgot password logic */ }} />}
     </div>
   );
 }

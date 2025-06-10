@@ -29,21 +29,18 @@ const Footer = () => {
           <div className="col-span-1">
             <h3 className="font-semibold text-sm text-gray-900 mb-4">Services</h3>
             <ul className="space-y-2">
-              <li><Link to="#" className="text-blue-600 hover:text-primary text-sm">Beauty & Wellness</Link></li>
-              <li><Link to="#" className="text-blue-600 hover:text-primary text-sm">Car Rental</Link></li>
-              <li><Link to="#" className="text-blue-600 hover:text-primary text-sm">Tuition</Link></li>
-              <li><Link to="#" className="text-blue-600 hover:text-primary text-sm">Housekeeping</Link></li>
-              <li><Link to="#" className="text-blue-600 hover:text-primary text-sm">Plumbing</Link></li>
-              <li><Link to="#" className="text-blue-600 hover:text-primary text-sm">Electrician</Link></li>
+              <li><Link to="/customer/services" className="text-blue-600 hover:text-primary text-sm">Beauty & Wellness</Link></li>
+              <li><Link to="/customer/services" className="text-blue-600 hover:text-primary text-sm">Housekeeping</Link></li>
+              <li><Link to="/customer/services" className="text-blue-600 hover:text-primary text-sm">Hairstyling</Link></li>
+              <li><Link to="/customer/services" className="text-blue-600 hover:text-primary text-sm">Tuition</Link></li>
             </ul>
           </div>
           
           <div className="col-span-1">
             <h3 className="font-semibold text-sm text-gray-900 mb-4">Company</h3>
             <ul className="space-y-2">
-              <li><Link to="/about" className="text-blue-600 hover:text-primary text-sm">About Us</Link></li>
-              <li><Link to="/contact" className="text-blue-600 hover:text-primary text-sm">Contact</Link></li>
-              <li><Link to="/blog" className="text-blue-600 hover:text-primary text-sm">Blog</Link></li>
+              <li><Link to="/customer/about" className="text-blue-600 hover:text-primary text-sm">About Us</Link></li>
+              <li><Link to="http://localhost:5173/" className="text-blue-600 hover:text-primary text-sm">Contact</Link></li>
             </ul>
           </div>
           
@@ -52,7 +49,7 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-start">
                 <Phone size={16} className="text-gray-400 mr-2 mt-0.5" />
-                <span className="text-gray-600 text-sm">+1 (555) 123-4567</span>
+                <span className="text-gray-600 text-sm">+91 6289484578</span>
               </li>
               <li className="flex items-start">
                 <Mail size={16} className="text-gray-400 mr-2 mt-0.5" />
@@ -61,8 +58,8 @@ const Footer = () => {
               <li className="flex items-start">
                 <MapPin size={16} className="text-gray-400 mr-2 mt-0.5" />
                 <span className="text-gray-600 text-sm">
-                  123 Business Avenue, Suite 100<br />
-                  San Francisco, CA 94107
+                  Sector V,   Kolkata  <br />
+                  West Bengal
                 </span>
               </li>
             </ul>

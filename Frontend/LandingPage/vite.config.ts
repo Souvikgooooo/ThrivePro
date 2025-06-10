@@ -8,6 +8,12 @@ export default defineConfig(({ mode }) => ({ // Changed to function to access mo
   server: { // Added server configuration
     host: '::', // Keep consistent with other configs
     port: 5173, // Set desired port
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      },
+    },
   },
   plugins: [
     react(),

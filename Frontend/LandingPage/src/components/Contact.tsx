@@ -1,7 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import axios from 'axios';
+import { useToast } from '../features/customer/hooks/use-toast'; // Corrected path
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: '',
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+
   const developers = [
     { name: 'Souvik Ghosh', email: 'sg@lsp.com' },
     { name: 'Soumyadip Paul', email: 'sp@lsp.com' },
@@ -9,6 +19,41 @@ const Contact = () => {
     { name: 'Priyanath Bhukta', email: 'pb@lsp.com' },
     { name: 'Trisha Ghosh', email: 'tg@lsp.com' }
   ];
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const response = await axios.post('http://localhost:8000/api/contact', formData);
+      if (response.data.status === 'success') {
+        toast({
+          title: 'Message Sent!',
+          description: 'Your message has been successfully sent to the development team.',
+          variant: 'default',
+        });
+        setFormData({ name: '', email: '', message: '' }); // Clear form
+      } else {
+        toast({
+          title: 'Failed to Send Message',
+          description: response.data.message || 'An unexpected error occurred.',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      console.error('Error sending contact message:', error);
+      toast({
+        title: 'Error',
+        description: 'There was an error sending your message. Please try again later.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div id="contact" className="py-20 px-4 sm:px-6 lg:px-8">
@@ -42,7 +87,7 @@ const Contact = () => {
           {/* Contact form made theme aware, added animation */}
           <div className="bg-primary rounded-2xl shadow-lg p-8 text-primary-foreground animate-fade-in" style={{ animationDelay: '0.4s' }}>
             <h3 className="text-2xl font-semibold mb-6">Send us a Message</h3>
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-2 text-primary-foreground/80">Your Name</label>
                 <input
@@ -50,6 +95,9 @@ const Contact = () => {
                   id="name"
                   className="w-full px-4 py-2 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 focus:border-primary-foreground focus:ring-2 focus:ring-primary-foreground/50 text-primary-foreground placeholder-primary-foreground/60"
                   placeholder="Enter your name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
                 />
               </div>
               <div>
@@ -59,6 +107,9 @@ const Contact = () => {
                   id="email"
                   className="w-full px-4 py-2 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 focus:border-primary-foreground focus:ring-2 focus:ring-primary-foreground/50 text-primary-foreground placeholder-primary-foreground/60"
                   placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
                 />
               </div>
               <div>
@@ -68,13 +119,17 @@ const Contact = () => {
                   rows={4}
                   className="w-full px-4 py-2 rounded-lg bg-primary-foreground/10 border border-primary-foreground/20 focus:border-primary-foreground focus:ring-2 focus:ring-primary-foreground/50 text-primary-foreground placeholder-primary-foreground/60"
                   placeholder="Enter your message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  required
                 ></textarea>
               </div>
               <button
                 type="submit"
                 className="w-full bg-primary-foreground text-primary py-2 px-4 rounded-lg font-medium hover:bg-primary-foreground/90 transition-colors flex items-center justify-center"
+                disabled={isSubmitting}
               >
-                Send Message
+                {isSubmitting ? 'Sending...' : 'Send Message'}
                 <Send className="ml-2 w-4 h-4" />
               </button>
             </form>

@@ -16,7 +16,7 @@ const initialServices = [
     description: 'Professional haircut and styling service tailored to your preferences.',
     price: 30.00,
     duration: '45 mins',
-    category: 'Beauty & Wellness',
+    category: 'Hairstyling', // Changed from Beauty & Wellness
     image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRO5PomSrHN8seQMf5xmDn0uWpbESNBRqIZlg&s',
     availability: true
   },
