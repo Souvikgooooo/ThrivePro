@@ -74,7 +74,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ role, onBack, onClose }) => {
     }
 
     try {
-      const response = await axios.post('http://localhost:8000/api/auth/register', {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/register`, {
         name: formData.name,
         phone_number: formData.phone_number,
         email: formData.email,
