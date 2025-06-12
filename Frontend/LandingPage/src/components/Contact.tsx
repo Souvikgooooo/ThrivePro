@@ -28,7 +28,7 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await axios.post('http://localhost:8000/api/contact', formData);
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/contact`, formData);
       if (response.data.status === 'success') {
         toast({
           title: 'Message Sent!',

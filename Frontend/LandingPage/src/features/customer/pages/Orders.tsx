@@ -56,8 +56,8 @@ const Orders = () => {
       return;
     }
     setLoading(true);
-    try {
-      const response = await axios.get('http://localhost:8000/api/service-requests/customer', { // Corrected endpoint
+      try {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/service-requests/customer`, { // Corrected endpoint
         headers: {
           Authorization: `Bearer ${user.accessToken}`,
         },

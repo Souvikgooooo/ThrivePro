@@ -32,7 +32,7 @@ const ResetPasswordPage: React.FC = () => {
     }
 
     try {
-      const response = await axios.patch(`http://localhost:8000/api/auth/reset-password/${token}`, {
+      const response = await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/auth/reset-password/${token}`, {
         password,
         passwordConfirm,
       });

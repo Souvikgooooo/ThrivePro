@@ -29,7 +29,7 @@ const Orders = () => {
       }
       setLoading(true);
       try {
-        const response = await axios.get('http://localhost:8000/api/service-requests/provider', {
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/service-requests/provider`, {
           headers: { Authorization: `Bearer ${user.accessToken}` },
         });
         if (response.data && Array.isArray(response.data.data?.serviceRequests)) {
@@ -78,7 +78,7 @@ const Orders = () => {
       return;
     }
     try {
-      await axios.patch(`http://localhost:8000/api/service-requests/${orderId}/provider`, { status: newStatus }, {
+      await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/service-requests/${orderId}/provider`, { status: newStatus }, {
         headers: { Authorization: `Bearer ${user.accessToken}` },
       });
       setOrders(orders.map(order => order._id === orderId ? { ...order, status: newStatus } : order));

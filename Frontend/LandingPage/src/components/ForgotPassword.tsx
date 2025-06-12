@@ -21,7 +21,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onClose, onLoginClick }
 
     try {
       // Call the actual backend endpoint
-      const response = await axios.post('http://localhost:8000/api/auth/forgot-password', { email, phone });
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/forgot-password`, { email, phone });
 
       console.log('Forgot password request successful:', response.data);
       setMessage(response.data.message || 'If an account matches the details provided, a password reset link will be sent.');

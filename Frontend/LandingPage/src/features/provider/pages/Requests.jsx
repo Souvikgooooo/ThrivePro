@@ -26,7 +26,7 @@ const Requests = () => {
       }
       setLoading(true);
       try {
-        const response = await axios.get('http://localhost:8000/api/service-requests/provider', {
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/service-requests/provider`, {
           headers: {
             Authorization: `Bearer ${user.accessToken}`,
           },
@@ -62,7 +62,7 @@ const Requests = () => {
       return;
     }
     try {
-      const response = await axios.patch(`http://localhost:8000/api/service-requests/${requestId}/provider`, 
+      const response = await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/service-requests/${requestId}/provider`,
         { status: 'accepted' },
         {
           headers: {
@@ -90,7 +90,7 @@ const Requests = () => {
     }
     if (window.confirm('Are you sure you want to reject this request?')) {
       try {
-        const response = await axios.patch(`http://localhost:8000/api/service-requests/${requestId}/provider`, 
+        const response = await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/service-requests/${requestId}/provider`,
           { status: 'rejected' },
           {
             headers: {

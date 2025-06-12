@@ -67,7 +67,7 @@ const BookServicePage: React.FC = () => {
         setProvidersLoading(true);
         try {
           console.log(`Fetching providers for service: ${service.name}`);
-          const response = await axios.get(`http://localhost:8000/api/provider/by-service/${encodeURIComponent(service.name)}`, {
+          const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/provider/by-service/${encodeURIComponent(service.name)}`, {
             headers: {
               Authorization: `Bearer ${user?.accessToken}`, 
             },
@@ -144,7 +144,7 @@ const BookServicePage: React.FC = () => {
     console.log('Submitting Booking Details:', bookingPayload);
 
     try {
-      const response = await axios.post('http://localhost:8000/api/service-requests', bookingPayload, {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/service-requests`, bookingPayload, {
         headers: {
           Authorization: `Bearer ${user.accessToken}`,
         },

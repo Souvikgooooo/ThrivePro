@@ -277,8 +277,8 @@ const OrderDetails = ({ order, onClose, onPaymentSuccess }) => { // Added onPaym
                   try {
                     // Step 1: Create Razorpay Order by calling backend
                     const orderCreationResponse = await axios.post(
-                      `http://localhost:8000/api/payment/order`,
-                      { 
+                      `${import.meta.env.VITE_API_BASE_URL}/payment/order`,
+                      {
                         amount: orderAmount, 
                         currency: 'INR',
                       },
@@ -303,7 +303,7 @@ const OrderDetails = ({ order, onClose, onPaymentSuccess }) => { // Added onPaym
                         // Step 3: Verify Payment with backend
                         try {
                           const verificationResponse = await axios.post(
-                            `http://localhost:8000/api/payment/payment/${order._id}`,
+                            `${import.meta.env.VITE_API_BASE_URL}/payment/payment/${order._id}`,
                             {
                               razorpay_order_id: response.razorpay_order_id,
                               razorpay_payment_id: response.razorpay_payment_id,

@@ -34,7 +34,7 @@ const Login: React.FC<LoginProps> = ({ onClose, onSignUpClick, onForgotPasswordC
   }
 
   try {
-    const response = await axios.post('http://localhost:8000/api/auth/login', {
+    const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/login`, {
       email,
       password,
     });
@@ -100,11 +100,11 @@ const handleLogout = async () => {
   // that `setUser` from `useUser()` was available in this component's scope.
   const { setUser } = useUser(); // Re-enable for logout, or move logout to context
   try {
-    await axios.post('http://localhost:8000/api/auth/logout');
+    await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/logout`);
     // Clear user from context (which also removes from localStorage)
     setUser(null); 
     // Redirect to landing page or login page
-    window.location.href = 'http://localhost:5173/'; // Assuming landing page is on 5173
+    window.location.href = window.location.origin; // Use current origin for redirection
   } catch (error) {
     console.error('Logout Failed:', error);
     // Handle logout error (e.g., show a message)
