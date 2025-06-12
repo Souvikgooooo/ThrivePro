@@ -7,7 +7,29 @@ const connectDB=require("./config/db")
 const app = express();
 
 // Middleware
-app.use(cors());
+const allowedOrigins = [
+  'https://thrive-pro-kappa.vercel.app', // Your Vercel frontend URL
+  // Add other production origins here if needed
+];
+
+// Conditionally allow localhost for development
+if (process.env.NODE_ENV !== 'production') {
+  allowedOrigins.push('http://localhost:5173'); // Frontend dev server
+  allowedOrigins.push('http://localhost:3000'); // Another common frontend dev port
+}
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true, // Allow cookies to be sent
+}));
 app.use(express.json());
 
 // Routes
